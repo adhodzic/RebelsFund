@@ -14,4 +14,4 @@ npm run serve
 ```
 npm run build
 ```
-### Riješen Drizzle plugin
+### Započet Profile View
