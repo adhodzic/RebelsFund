@@ -1,3 +1,4 @@
+import RebelsFund from "@/contracts/RebelsFund.json";
 const options = {
   web3: {
     block: false,
@@ -7,13 +8,13 @@ const options = {
     }
   },
 // The contracts to monitor
-  contracts: [],
+  contracts: [RebelsFund],
   events: {
-    
+    RebelsFund: ["SignatureAdded"]
   },
   polls: {
     // check accounts ever 15 seconds
-    accounts: 15000
+    accounts: 1000
   }
 };
 export default options;
