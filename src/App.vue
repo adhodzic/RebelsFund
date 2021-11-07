@@ -5,14 +5,14 @@
         <a class="navbar-brand"> The Rebel's Fund </a>
       </div>
     </nav>
-    <div v-if="getRole != -1">
-      <router-view />
-    </div>
+      <router-view :key="$route.path"></router-view>
     <!-- <h1>You are signed-in</h1> -->
      <nav class="navbar fixed-bottom navbar-dark bg-dark">
     </nav>
   </div>
   <div v-else>
+    <p>Waiting for metamask
+    </p>
     <!--  First sign in with metamask... -->
   </div>
 </template>
@@ -21,6 +21,12 @@
 import { mapGetters } from "vuex"
 export default {
   name: "app",
+  beforeRouteEnter (to, from, next) {
+    debugger;
+    next(vm => {
+      // access to component instance via `vm`
+    })
+  }, 
   data(){
     return{
       name: "",
@@ -67,46 +73,23 @@ export default {
     async getUserRole(){
       await this.checkState();
       if (this.isDrizzleInitialized) {
-        console.log(this.drizzleInstance.contracts.RebelsFund.methods)
         const role = await this.drizzleInstance.contracts.RebelsFund.methods.getRole().call();
         if(role == 0){
           this.$router.push('/login')
         }
         this.$store.dispatch("updateRole", role);      
       }   
-      console.log("Usli smo 5")    
     },
-    //Method which is called on non existing user to register it self as a charity role
-    async addAsCharity(){
-      if (this.isDrizzleInitialized) {
-        if(this.name != "" && this.amount != ""){
-          console.log(this.drizzleInstance.contracts)
-          await this.drizzleInstance.contracts.RebelsFund.methods.signCharity(this.utils.toHex(this.name), parseInt(this.amount)).send()
-          await this.getUserRole();  
-        }else{
-          alert("Please enter all fields")
-        }         
-      }
-    },
-    //Method which is called on non existing user to register it self as a donor role
-    async addAsDonor(){
-      if (this.isDrizzleInitialized) {
-        if(this.name != ""){
-          await this.drizzleInstance.contracts.RebelsFund.methods.signUser(this.utils.toHex(this.name)).send()
-          await this.getUserRole();  
-        }else{
-          alert("Please enter all fields")
-        }  
-      }       
-    }
   },
   mounted(){
+    console.log("mounted")
     this.$drizzleEvents.$on('drizzle/contractEvent', payload => {
       console.log(payload)
       //alert(payload.data.message + payload.data.name)
     })
   },
   async created() {
+    console.log("created")
     await this.getUserRole()
     this.$store.dispatch("drizzle/REGISTER_CONTRACT", {
       contractName: "RebelsFund",
