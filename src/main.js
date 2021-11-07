@@ -8,6 +8,9 @@ import drizzleVuePlugin from "@drizzle/vue-plugin"
 import drizzleOptions from "./drizzleOptions"
 import vuetify from './plugins/vuetify'
 
+import VuePageTransition from 'vue-page-transition'
+
+Vue.use(VuePageTransition)
 
 Vue.use(Vuetify)
 
