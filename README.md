@@ -14,4 +14,4 @@ npm run serve
 ```
 npm run build
 ```
-### Napravljen Login View
+### Započet Profile View

@@ -3,11 +3,10 @@
     <nav class="navbar navbar-dark bg-dark">
       <div class="container-fluid">
         <a class="navbar-brand"> The Rebel's Fund </a>
+        <router-link to="/profile"><a href="#"><img id="avatar" src="@/assets/user.png"></a></router-link>
       </div>
     </nav>
-    <div v-if="getRole != -1">
-      <router-view />
-    </div>
+    <router-view />
     <!-- <h1>You are signed-in</h1> -->
      <nav class="navbar fixed-bottom navbar-dark bg-dark">
     </nav>
@@ -127,5 +126,13 @@ export default {
 .navbar{
    border-bottom: rgb(218, 121, 247);
    border-style: solid;
+}
+#avatar{
+  height: 45px;
+  width: 45px;
+  color: whitesmoke;
+}
+#avatar:hover{
+  cursor: pointer;
 }
 </style>
