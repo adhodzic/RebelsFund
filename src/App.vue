@@ -17,17 +17,103 @@
 </template>
 
 <script>
-import { mapGetters } from "vuex";
+import { mapGetters } from "vuex"
 export default {
   name: "app",
+  data(){
+    return{
+      name: "",
+      amount: "",
+      getAllCharity: "",
+      char: "",
+    }
+  },
   computed: {
     ...mapGetters("drizzle", ["drizzleInstance", "isDrizzleInitialized"]),
     ...mapGetters("contracts", ["getContractData"]),
-    utils() {
-      return this.drizzleInstance.web3.utils;
+    ...mapGetters(["getRole"]),
+    getNames() {
+      let data = this.getContractData({
+        contract: "RebelsFund",
+        method: "getAllCharity"
+      });
+      if (data === "loading") return false;
+      console.log(data)
+      return data
     },
+    utils() {
+      return this.drizzleInstance.web3.utils
+    }
   },
-};
+  methods: {
+    async donate(name){
+      await this.checkState();
+      if (this.isDrizzleInitialized) {
+        const role = await this.drizzleInstance.contracts.RebelsFund.methods.transferEther(this.utils.toHex(name[0])).send();
+        console.log(role)   
+      }       
+    },
+    //Method used to check if drizzle is initialized and if it's not it will wait and check every 500ms
+    async checkState(){
+			let state = this.isDrizzleInitialized;
+			while(!state){
+				const delay = new Promise(resolve => setTimeout(resolve, 500));
+				await delay;
+				state = this.isDrizzleInitialized;
+			}
+		},
+    //Method that fetches and updates user role from smart contract to vuex store
+    async getUserRole(){
+      await this.checkState();
+      if (this.isDrizzleInitialized) {
+        console.log(this.drizzleInstance.contracts.RebelsFund.methods)
+        const role = await this.drizzleInstance.contracts.RebelsFund.methods.getRole().call();
+        if(role == 0){
+          this.$router.push('/login')
+        }
+        this.$store.dispatch("updateRole", role);      
+      }   
+      console.log("Usli smo 5")    
+    },
+    //Method which is called on non existing user to register it self as a charity role
+    async addAsCharity(){
+      if (this.isDrizzleInitialized) {
+        if(this.name != "" && this.amount != ""){
+          console.log(this.drizzleInstance.contracts)
+          await this.drizzleInstance.contracts.RebelsFund.methods.signCharity(this.utils.toHex(this.name), parseInt(this.amount)).send()
+          await this.getUserRole();  
+        }else{
+          alert("Please enter all fields")
+        }         
+      }
+    },
+    //Method which is called on non existing user to register it self as a donor role
+    async addAsDonor(){
+      if (this.isDrizzleInitialized) {
+        if(this.name != ""){
+          await this.drizzleInstance.contracts.RebelsFund.methods.signUser(this.utils.toHex(this.name)).send()
+          await this.getUserRole();  
+        }else{
+          alert("Please enter all fields")
+        }  
+      }       
+    }
+  },
+  mounted(){
+    this.$drizzleEvents.$on('drizzle/contractEvent', payload => {
+      console.log(payload)
+      //alert(payload.data.message + payload.data.name)
+    })
+  },
+  async created() {
+    await this.getUserRole()
+    this.$store.dispatch("drizzle/REGISTER_CONTRACT", {
+      contractName: "RebelsFund",
+      method: "getAllCharity",
+      methodArgs: []
+    })
+  }
+}
 </script>
 
 

@@ -14,11 +14,14 @@ const routes = [
     path:'/login',
     name:'login',
     component: () => import(/* webpackChunkName: "tv-shows" */ '../views/Login.vue')
+<<<<<<< HEAD
   },
   {
     path:'/profile',
     name:'profile',
     component: () => import(/* webpackChunkName: "tv-shows" */ '../views/Profile.vue')
+=======
+>>>>>>> origin/login-v1.0
   }
 ]
 
