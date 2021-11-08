@@ -1,7 +1,7 @@
 import Vue from 'vue'
 import App from './App.vue'
 import router from './router'
-import store from "./store"
+import store from "./store/store"
 
 import Vuex from 'vuex'
 import drizzleVuePlugin from "@drizzle/vue-plugin"
@@ -21,8 +21,8 @@ Vue.config.productionTip = false
 
 
 new Vue({
+  store,
   router,
   render: h => h(App),
   vuetify,
-  store
 }).$mount('#app')

@@ -29,7 +29,7 @@
 
 <script>
 import { mapGetters } from "vuex"
-import store from '../store'
+import store from '../store/store'
 export default {
     data() {
         return {
@@ -45,7 +45,11 @@ export default {
         return this.drizzleInstance.web3.utils
         }
     },
-    beforeRouteEnter (to, from, next) {
+    async beforeRouteEnter (to, from, next) {
+        while(store.getters.getRole == -1){
+            const delay = new Promise(resolve => setTimeout(resolve, 500));
+            await delay;
+        }
         if(store.getters.getRole == 0){
             next();
         }else{
@@ -58,7 +62,7 @@ export default {
         if (this.isDrizzleInitialized) {
             if(this.charity_name != "" && this.charity_month_amount != ""){
             await this.drizzleInstance.contracts.RebelsFund.methods.signCharity(this.utils.toHex(this.charity_name), parseInt(this.charity_month_amount)).send(); 
-            this.$router.push('/')
+            this.$router.push("/").catch((err) => {console.log(err)});
             }else{
             alert("Please enter all fields")
             }         
@@ -69,7 +73,7 @@ export default {
         if (this.isDrizzleInitialized) {
             if(this.donor_name != ""){
             await this.drizzleInstance.contracts.RebelsFund.methods.signUser(this.utils.toHex(this.donor_name)).send()
-            this.$router.push('/')
+            this.$router.push("/").catch((err) => {console.log(err)});
             }else{
             alert("Please enter all fields")
             }  
