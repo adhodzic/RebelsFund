@@ -26,7 +26,6 @@ export default {
     return{
       name: "",
       amount: "",
-      getAllCharity: "",
       char: "",
     }
   },
@@ -86,6 +85,7 @@ export default {
   async created() {
     console.log("created")
     await this.getUserRole()
+    await this.getAllCharity()
     this.$store.dispatch("drizzle/REGISTER_CONTRACT", {
       contractName: "RebelsFund",
       method: "getAllCharity",
