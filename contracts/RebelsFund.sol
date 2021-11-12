@@ -21,9 +21,10 @@ contract RebelsFund {
   uint charityAddressesCount;
  
 
-  function transferEther(address payable receiverAdr) external {
-    if(charity[receiverAdr].exist){
-      receiverAdr.transfer(1 ether);
+  function transferEther(address payable receiver)payable external {
+    if(charity[receiver].exist){
+      receiver.transfer(msg.value);
+      charity[receiver].recievedAmount += msg.value/(1 ether);
     }
   }
   function signCharity(bytes32 name, uint monthAmount) public {

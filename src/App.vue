@@ -33,7 +33,7 @@ export default {
     ...mapGetters("drizzle", ["drizzleInstance", "isDrizzleInitialized"]),
     ...mapGetters("contracts", ["getContractData"]),
     ...mapGetters(["getRole"]),
-    getNames() {
+    /* getNames() {
       let data = this.getContractData({
         contract: "RebelsFund",
         method: "getAllCharity"
@@ -41,19 +41,12 @@ export default {
       if (data === "loading") return false;
       console.log(data)
       return data
-    },
+    }, */
     utils() {
       return this.drizzleInstance.web3.utils
     }
   },
   methods: {
-    async donate(name){
-      await this.checkState();
-      if (this.isDrizzleInitialized) {
-        const role = await this.drizzleInstance.contracts.RebelsFund.methods.transferEther(this.utils.toHex(name[0])).send();
-        console.log(role)   
-      }       
-    },
     //Method used to check if drizzle is initialized and if it's not it will wait and check every 500ms
     async checkState(){
 			let state = this.isDrizzleInitialized;
@@ -85,7 +78,6 @@ export default {
   async created() {
     console.log("created")
     await this.getUserRole()
-    await this.getAllCharity()
     this.$store.dispatch("drizzle/REGISTER_CONTRACT", {
       contractName: "RebelsFund",
       method: "getAllCharity",

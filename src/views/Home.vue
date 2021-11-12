@@ -9,19 +9,26 @@
 </template>
 
 <script>
-import store from '../store/store'
 import { mapGetters } from "vuex"
 import CharityCard from "../components/CharityCard.vue"
 export default {
   name: 'Home',
   computed: {
     ...mapGetters("drizzle", ["drizzleInstance", "isDrizzleInitialized"]),
-    ...mapGetters(["getRole", "getCharitys"])
+    ...mapGetters(["getRole","getCharitys"])
   },
   components: {
     CharityCard
   },
   methods: {
+    async donate(account, donate_ammount){
+      await this.checkState();
+      if (this.isDrizzleInitialized) {
+          let ether = 1000000000000000000;
+          donate_ammount *= ether;
+          await this.drizzleInstance.contracts.RebelsFund.methods.transferEther(account).send({value: donate_ammount}) 
+      }       
+    },
     async checkState(){
 			let state = this.isDrizzleInitialized;
 			while(!state){
@@ -34,14 +41,13 @@ export default {
         await this.checkState();
         if (this.isDrizzleInitialized) {
           const charitys = await this.drizzleInstance.contracts.RebelsFund.methods.getAllCharity().call();
+          this.$store.dispatch("updateCharitys", charitys);
           console.log(charitys)
-          this.$store.dispatch("updateCharitys", charitys);  
         }
     },
   },
   async mounted(){
     await this.getAllCharity();
-    console.log(this.getCharitys)
   }
 }
 </script>
