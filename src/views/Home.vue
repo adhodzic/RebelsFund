@@ -43,7 +43,6 @@ export default {
         if (this.isDrizzleInitialized) {
           const charitys = await this.drizzleInstance.contracts.RebelsFund.methods.getAllCharity().call();
           this.$store.dispatch("updateCharitys", charitys);
-          console.log(charitys)
         }
     },
   },
