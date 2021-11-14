@@ -33,15 +33,9 @@ export default {
     ...mapGetters("drizzle", ["drizzleInstance", "isDrizzleInitialized"]),
     ...mapGetters("contracts", ["getContractData"]),
     ...mapGetters(["getRole"]),
-    /* getNames() {
-      let data = this.getContractData({
-        contract: "RebelsFund",
-        method: "getAllCharity"
-      });
-      if (data === "loading") return false;
-      console.log(data)
-      return data
-    }, */
+    currentRouteName() {
+        return this.$route.name;
+    },
     utils() {
       return this.drizzleInstance.web3.utils
     }
@@ -59,24 +53,38 @@ export default {
     //Method that fetches and updates user role from smart contract to vuex store
     async getUserRole(){
       await this.checkState();
+      let sender = this.drizzleInstance.web3.eth.accounts.givenProvider.selectedAddress;
       if (this.isDrizzleInitialized) {
-        const role = await this.drizzleInstance.contracts.RebelsFund.methods.getRole().call();
-        if(role == 0){
-          this.$router.push('/login')
-        }
+        const role = await this.drizzleInstance.contracts.RebelsFund.methods.getRole().call({from: sender});
+          if(this.currentRouteName == "Profile"){
+            if(role >= 0){
+              this.$router.push('/')
+            }
+          }else if(this.currentRouteName == "Home"){
+            if(role == 0){
+              this.$router.push('/login')      
+            }
+          }
         this.$store.dispatch("updateRole", role);      
       }   
     },
+    async listenMMAccount() {
+      let self = this
+      window.ethereum.on("accountsChanged", async function(accounts) {
+        self.getUserRole();
+      });
+    }
   },
   mounted(){
-    console.log("mounted")
+    this.listenMMAccount();
+    /* window.ethereum.on("accountsChanged", async function() {
+        console.log();
+    }); */
     this.$drizzleEvents.$on('drizzle/contractEvent', payload => {
-      console.log(payload)
       //alert(payload.data.message + payload.data.name)
     })
   },
   async created() {
-    console.log("created")
     await this.getUserRole()
     this.$store.dispatch("drizzle/REGISTER_CONTRACT", {
       contractName: "RebelsFund",

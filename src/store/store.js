@@ -30,7 +30,7 @@ export default new Vuex.Store({
     },
     updateCharitys ({commit}, charitys){
       commit('updateCharitys', {charitys})
-    }
+    },
   },
   modules: {},
 });
