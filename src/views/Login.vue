@@ -62,7 +62,7 @@ export default {
         if (this.isDrizzleInitialized) {
             if(this.charity_name != "" && this.charity_month_amount != ""){
             await this.drizzleInstance.contracts.RebelsFund.methods.signCharity(this.utils.toHex(this.charity_name), parseInt(this.charity_month_amount)).send(); 
-            this.$router.push("/").catch((err) => {console.log(err)});
+            this.$router.push({name: "Home"});
             }else{
             alert("Please enter all fields")
             }         
@@ -73,7 +73,7 @@ export default {
         if (this.isDrizzleInitialized) {
             if(this.donor_name != ""){
             await this.drizzleInstance.contracts.RebelsFund.methods.signUser(this.utils.toHex(this.donor_name)).send()
-            this.$router.push("/").catch((err) => {console.log(err)});
+            this.$router.push({name: "Home"});
             }else{
             alert("Please enter all fields")
             }  

@@ -14,17 +14,8 @@ import { mapGetters } from "vuex"
 import CharityCard from "../components/CharityCard.vue"
 export default {
   name: 'Home',
-  async beforeRouteEnter (to, from, next) {
-    while(store.getters.getRole == -1){
-      const delay = new Promise(resolve => setTimeout(resolve, 500));
-			await delay;
-    }
-    if(store.getters.getRole > 0){
-      next();
-    }else{
-      next("Login");
-    }
-  },
+  /* async beforeRouteEnter (to, from, next) {
+  }, */
   computed: {
     ...mapGetters("drizzle", ["drizzleInstance", "isDrizzleInitialized"]),
     ...mapGetters(["getRole","getCharitys"])
@@ -38,7 +29,8 @@ export default {
       if (this.isDrizzleInitialized) {
           let ether = 1000000000000000000;
           donate_ammount *= ether;
-          await this.drizzleInstance.contracts.RebelsFund.methods.transferEther(account).send({value: donate_ammount}) 
+          await this.drizzleInstance.contracts.RebelsFund.methods.transferEther(account).send({value: donate_ammount})
+          await this.getAllCharity();
       }       
     },
     async checkState(){

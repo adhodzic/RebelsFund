@@ -3,7 +3,12 @@
     <nav class="navbar navbar-dark bg-dark">
       <div class="container-fluid">
         <a class="navbar-brand"> The Rebel's Fund </a>
-        <router-link v-if="getRole > 0" to="/profile"><a href="#"><img id="avatar" src="@/assets/user.png"></a></router-link>
+        {{getRole}}
+        <div v-if="$route.name != 'Login'" class="profile">
+          <router-link to="/profile"><a href="#">
+            <img id="avatar" src="@/assets/user.png"></a>
+        </router-link>  
+        </div>
       </div>
     </nav>
       <router-view v-if="getRole != -1"></router-view>
@@ -33,9 +38,6 @@ export default {
     ...mapGetters("drizzle", ["drizzleInstance", "isDrizzleInitialized"]),
     ...mapGetters("contracts", ["getContractData"]),
     ...mapGetters(["getRole"]),
-    currentRouteName() {
-        return this.$route.name;
-    },
     utils() {
       return this.drizzleInstance.web3.utils
     }
@@ -56,16 +58,12 @@ export default {
       let sender = this.drizzleInstance.web3.eth.accounts.givenProvider.selectedAddress;
       if (this.isDrizzleInitialized) {
         const role = await this.drizzleInstance.contracts.RebelsFund.methods.getRole().call({from: sender});
-          if(this.currentRouteName == "Profile"){
-            if(role >= 0){
-              this.$router.push('/')
-            }
-          }else if(this.currentRouteName == "Home"){
-            if(role == 0){
-              this.$router.push('/login')      
-            }
-          }
-        this.$store.dispatch("updateRole", role);      
+        this.$store.dispatch("updateRole", role);  
+        if(role == 0 && this.$route.name != 'Login'){
+          this.$router.push("/login")
+        }else if(role > 0 && this.$route == 'Login'){
+          this.$router.push("/")
+        }
       }   
     },
     async listenMMAccount() {
