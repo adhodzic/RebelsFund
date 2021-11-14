@@ -4,13 +4,13 @@
   <img src="https://logowik.com/content/uploads/images/753_wwf.jpg" class="card-img-top" alt="...">
   <div class="card-body">
     <hr class="solid">
-    <h5 id="title-text" class="card-title">{{utils.hexToUtf8(card_info[1])}}</h5>
-    <p id="account-text" class="card-text">{{card_info[0]}}</p>
-    <p id="target-ammount-text" class="card-text">Target Ammount : {{card_info[2]}} ETH</p>
+    <h5 id="title-text" class="card-title">{{utils.hexToUtf8(card_info["name"])}}</h5>
+    <p id="account-text" class="card-text">{{card_info["adr"]}}</p>
+    <p id="target-ammount-text" class="card-text">Target Ammount : {{card_info["monthAmount"]}} ETH</p>
     <img id="donor-img" src="@/assets/eth.png">
     <div id="progress-bar" class="progress">
      <!--Progress: <p>{{card_info[3]}}</p> -->
-  <div class="progress-bar progress-bar-striped bg-success" role="progressbar" style="width: 25%" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
+  <div class="progress-bar progress-bar-striped bg-success" role="progressbar" style="width: 50%" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100">{{progress}}</div>
 </div>
      <input v-model="donate_ammount" id="input-bar" class="form-control" placeholder="Ammount to donate (ETH)">
     <a @click="donate()" id="donate-button" href="#" class="btn btn-dark">Donate</a>
@@ -28,6 +28,9 @@ export default {
         ...mapGetters("drizzle", ["drizzleInstance", "isDrizzleInitialized"]),
         utils() {
             return this.drizzleInstance.web3.utils
+        },
+        progress(){
+            return this.card_info["recievedAmount"] / 1000000000000000000;
         }
     },
     data(){

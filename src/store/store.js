@@ -6,6 +6,7 @@ Vue.use(Vuex);
 export default new Vuex.Store({
   state: {
     role: -1,
+    currentUser: [],
     charitys: []
   },
   getters:{
@@ -14,6 +15,9 @@ export default new Vuex.Store({
     },
     getCharitys: state =>{
       return state.charitys
+    },
+    getCurrentUser: state =>{
+      return state.currentUser
     }
   },
   mutations: {
@@ -22,6 +26,9 @@ export default new Vuex.Store({
     },
     updateCharitys(state, {charitys}){
       state.charitys = charitys
+    },
+    setCurrentUser(state, {currentUser}){
+      state.currentUser = currentUser
     }
   },
   actions: {
@@ -30,6 +37,9 @@ export default new Vuex.Store({
     },
     updateCharitys ({commit}, charitys){
       commit('updateCharitys', {charitys})
+    },
+    setCurrentUser ({commit}, currentUser){
+      commit('setCurrentUser', {currentUser})
     }
   },
   modules: {},

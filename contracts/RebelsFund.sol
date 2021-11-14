@@ -4,10 +4,10 @@ pragma solidity >=0.4.22 <0.9.0;
 contract RebelsFund {
   event SignatureAdded(string message, bytes32 name);
   struct Charity{
-    address adr;
     bytes32 name;
-    uint monthAmount;
-    uint recievedAmount;
+    address adr;
+    uint256 monthAmount;
+    uint256 recievedAmount;
     bool exist;
   }
   struct User{
@@ -24,12 +24,12 @@ contract RebelsFund {
   function transferEther(address payable receiver)payable external {
     if(charity[receiver].exist){
       receiver.transfer(msg.value);
-      charity[receiver].recievedAmount += msg.value/(1 ether);
+      charity[receiver].recievedAmount += msg.value;
     }
   }
   function signCharity(bytes32 name, uint monthAmount) public {
     if(!charity[msg.sender].exist){
-      charity[msg.sender] = Charity(msg.sender,name, monthAmount, 0, true);
+      charity[msg.sender] = Charity(name,msg.sender, monthAmount, 0, true);
       charityAddresses[charityAddressesCount] = msg.sender;
       charityAddressesCount++;
       emit SignatureAdded("New charity added!", name);
@@ -57,6 +57,18 @@ contract RebelsFund {
     }
   }
 
+  function getUser() public view returns(User memory){
+    if(user[msg.sender].exist){
+      return user[msg.sender];
+    }
+  }
+
+  function getCharity() public view returns(Charity memory){
+    if(charity[msg.sender].exist){
+      return charity[msg.sender];
+    }
+  }
+
   function getAllCharity() public view returns (Charity[] memory){
     Charity[] memory charities = new Charity[](charityAddressesCount);
     for (uint i = 0; i < charityAddressesCount; i++) {
@@ -64,5 +76,15 @@ contract RebelsFund {
         charities[i] = charitie;
     }
     return charities;
+  }
+
+  function setUserName(bytes32 name) public {
+    user[msg.sender].name = name;
+  }
+  function setCharityName(bytes32 name) public {
+    charity[msg.sender].name = name;
+  }
+  function setCharityMonthAmount(uint256 monthAmount) public {
+    charity[msg.sender].monthAmount = monthAmount;
   }
 }

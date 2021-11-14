@@ -58,6 +58,16 @@ export default {
       let sender = this.drizzleInstance.web3.eth.accounts.givenProvider.selectedAddress;
       if (this.isDrizzleInitialized) {
         const role = await this.drizzleInstance.contracts.RebelsFund.methods.getRole().call({from: sender});
+        console.log(role)
+        if(role == 2){
+          const user = await this.drizzleInstance.contracts.RebelsFund.methods.getUser().call({from: sender})
+          console.log(user)
+          this.$store.dispatch("setCurrentUser", user);
+        }else if(role == 1){
+          const charity = await this.drizzleInstance.contracts.RebelsFund.methods.getCharity().call({from: sender})
+          console.log(charity)
+          this.$store.dispatch("setCurrentUser", charity);
+        }
         this.$store.dispatch("updateRole", role);  
         if(role == 0 && this.$route.name != 'Login'){
           this.$router.push("/login")
@@ -70,6 +80,7 @@ export default {
       let self = this
       window.ethereum.on("accountsChanged", async function(accounts) {
         self.getUserRole();
+        self.$store.dispatch("setCurrentUser", [])
       });
     }
   },
