@@ -4,9 +4,9 @@
   <img src="https://logowik.com/content/uploads/images/753_wwf.jpg" class="card-img-top" alt="...">
   <div class="card-body">
     <hr class="solid">
-    <h5 id="title-text" class="card-title">{{utils.hexToUtf8(card_info[1])}}</h5>
-    <p id="account-text" class="card-text">{{card_info[0]}}</p>
-    <p id="target-ammount-text" class="card-text">Target Ammount : {{card_info[2]}} ETH</p>
+    <h5 id="title-text" class="card-title">{{utils.hexToUtf8(card_info["name"])}}</h5>
+    <p id="account-text" class="card-text">{{card_info["adr"]}}</p>
+    <p id="target-ammount-text" class="card-text">Target Ammount : {{card_info["monthAmount"]}} ETH</p>
     <img id="donor-img" src="@/assets/eth.png">
     <div id="progress-bar" class="progress">
      <!--Progress: <p>{{card_info[3]}}</p> -->
@@ -31,6 +31,9 @@ export default {
         },
         calculate_percentage(){
             return (this.card_info.recievedAmount/this.card_info.monthAmount)*100
+        },
+        progress(){
+            return this.card_info["recievedAmount"] / 1000000000000000000;
         }
     },
     data(){

@@ -1,27 +1,29 @@
 <template>
   <div class="profile">
     <div class="container">
-      <h1>Profile View</h1>
+      <div class="preview">
+        <h1>Profile View</h1>
+        <h5>Name: {{$parent.utils.toUtf8(getCurrentUser["name"])}}</h5>
+      </div>
+      <div class="edit">
+        <input type="text" >
+      </div>
     </div>
   </div>
 </template>
 
 <script>
 import store from '../store/store'
+import { mapGetters } from "vuex"
 export default {
   name: 'Profile',
-  async beforeRouteEnter (to, from, next) {
-    while(store.getters.getRole == -1){
-      const delay = new Promise(resolve => setTimeout(resolve, 500));
-			await delay;
-    }
-    if(store.getters.getRole > 0){
-        next();
-    }else{
-        next({name: "Login"})
-    }
+  computed:{
+    ...mapGetters(["getCurrentUser"]),
   },
   components: {
+    
+  },
+  methods:{
     
   }
 }

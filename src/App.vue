@@ -3,7 +3,12 @@
     <nav class="navbar navbar-dark bg-dark">
       <div class="container-fluid">
         <a class="navbar-brand"> The Rebel's Fund </a>
-        <router-link v-if="getRole > 0" to="/profile"><a href="#"><img id="avatar" src="@/assets/user.png"></a></router-link>
+        {{getRole}}
+        <div v-if="$route.name != 'Login'" class="profile">
+          <router-link to="/profile"><a href="#">
+            <img id="avatar" src="@/assets/user.png"></a>
+        </router-link>  
+        </div>
       </div>
     </nav>
       <router-view v-if="getRole != -1"></router-view>
@@ -33,15 +38,6 @@ export default {
     ...mapGetters("drizzle", ["drizzleInstance", "isDrizzleInitialized"]),
     ...mapGetters("contracts", ["getContractData"]),
     ...mapGetters(["getRole"]),
-    /* getNames() {
-      let data = this.getContractData({
-        contract: "RebelsFund",
-        method: "getAllCharity"
-      });
-      if (data === "loading") return false;
-      console.log(data)
-      return data
-    }, */
     utils() {
       return this.drizzleInstance.web3.utils
     }
@@ -59,24 +55,45 @@ export default {
     //Method that fetches and updates user role from smart contract to vuex store
     async getUserRole(){
       await this.checkState();
+      let sender = this.drizzleInstance.web3.eth.accounts.givenProvider.selectedAddress;
       if (this.isDrizzleInitialized) {
-        const role = await this.drizzleInstance.contracts.RebelsFund.methods.getRole().call();
-        if(role == 0){
-          this.$router.push('/login')
+        const role = await this.drizzleInstance.contracts.RebelsFund.methods.getRole().call({from: sender});
+        console.log(role)
+        if(role == 2){
+          const user = await this.drizzleInstance.contracts.RebelsFund.methods.getUser().call({from: sender})
+          console.log(user)
+          this.$store.dispatch("setCurrentUser", user);
+        }else if(role == 1){
+          const charity = await this.drizzleInstance.contracts.RebelsFund.methods.getCharity().call({from: sender})
+          console.log(charity)
+          this.$store.dispatch("setCurrentUser", charity);
         }
-        this.$store.dispatch("updateRole", role);      
+        this.$store.dispatch("updateRole", role);  
+        if(role == 0 && this.$route.name != 'Login'){
+          this.$router.push("/login")
+        }else if(role > 0 && this.$route == 'Login'){
+          this.$router.push("/")
+        }
       }   
     },
+    async listenMMAccount() {
+      let self = this
+      window.ethereum.on("accountsChanged", async function(accounts) {
+        self.getUserRole();
+        self.$store.dispatch("setCurrentUser", [])
+      });
+    }
   },
   mounted(){
-    console.log("mounted")
+    this.listenMMAccount();
+    /* window.ethereum.on("accountsChanged", async function() {
+        console.log();
+    }); */
     this.$drizzleEvents.$on('drizzle/contractEvent', payload => {
-      console.log(payload)
       //alert(payload.data.message + payload.data.name)
     })
   },
   async created() {
-    console.log("created")
     await this.getUserRole()
     this.$store.dispatch("drizzle/REGISTER_CONTRACT", {
       contractName: "RebelsFund",
