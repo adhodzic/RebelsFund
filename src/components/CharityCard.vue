@@ -10,7 +10,7 @@
     <img id="donor-img" src="@/assets/eth.png">
     <div id="progress-bar" class="progress">
      <!--Progress: <p>{{card_info[3]}}</p> -->
-  <div id="progress-bar-real" class="progress-bar progress-bar-striped bg-success" role="progressbar" aria-valuemin="0" aria-valuemax="100"></div>
+  <div id="progress-bar-real" class="progress-bar progress-bar-striped bg-success" v-bind:style="{width: calculate_percentage + '%'}" role="progressbar" aria-valuemin="0" aria-valuemax="100"></div>
 </div>
      <input v-model="donate_ammount" id="input-bar" class="form-control" placeholder="Ammount to donate (ETH)">
     <a @click="donate()" id="donate-button" href="#" class="btn btn-dark" style="visibility: visible;">Donate</a>
@@ -30,11 +30,8 @@ export default {
             return this.drizzleInstance.web3.utils
         },
         calculate_percentage(){
-            return (this.card_info.recievedAmount/this.card_info.monthAmount)*100
+            return ((this.card_info.recievedAmount/1e18)/this.card_info.monthAmount)*100
         },
-        progress(){
-            return this.card_info["recievedAmount"] / 1000000000000000000;
-        }
     },
     data(){
         return{
@@ -43,21 +40,17 @@ export default {
     },
     methods:{
         donate(){
-            this.$parent.donate(this.card_info[0], this.donate_ammount)
+            this.$parent.donate(this.card_info.adr, this.donate_ammount)
             this.donate_ammount = ""
         },
-        set_percentage(){
-            document.getElementById("progress-bar-real").style.width = `${this.calculate_percentage}%`;
-        },
         check_ammount(){
-            if(this.card_info.recievedAmount>=this.card_info.monthAmount){
+            if(this.calculate_percentage >= 100){
                 document.getElementById("donate-button").style.visibility="hidden"   
             }
         }
     },
     mounted(){
     console.log("Card Info: ",this.card_info)
-    this.set_percentage()
     this.check_ammount()
   }
 }
