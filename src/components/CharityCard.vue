@@ -10,10 +10,10 @@
     <img id="donor-img" src="@/assets/eth.png">
     <div id="progress-bar" class="progress">
      <!--Progress: <p>{{card_info[3]}}</p> -->
-  <div class="progress-bar progress-bar-striped bg-success" role="progressbar" style="width: 25%" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
+  <div id="progress-bar-real" class="progress-bar progress-bar-striped bg-success" role="progressbar" aria-valuemin="0" aria-valuemax="100"></div>
 </div>
      <input v-model="donate_ammount" id="input-bar" class="form-control" placeholder="Ammount to donate (ETH)">
-    <a @click="donate()" id="donate-button" href="#" class="btn btn-dark">Donate</a>
+    <a @click="donate()" id="donate-button" href="#" class="btn btn-dark" style="visibility: visible;">Donate</a>
      <img id="info-img" src="@/assets/info.png">
   </div>
 </div>
@@ -28,6 +28,9 @@ export default {
         ...mapGetters("drizzle", ["drizzleInstance", "isDrizzleInitialized"]),
         utils() {
             return this.drizzleInstance.web3.utils
+        },
+        calculate_percentage(){
+            return (this.card_info.recievedAmount/this.card_info.monthAmount)*100
         }
     },
     data(){
@@ -39,10 +42,20 @@ export default {
         donate(){
             this.$parent.donate(this.card_info[0], this.donate_ammount)
             this.donate_ammount = ""
+        },
+        set_percentage(){
+            document.getElementById("progress-bar-real").style.width = `${this.calculate_percentage}%`;
+        },
+        check_ammount(){
+            if(this.card_info.recievedAmount>=this.card_info.monthAmount){
+                document.getElementById("donate-button").style.visibility="hidden"   
+            }
         }
     },
     mounted(){
-    console.log(this.card_info)
+    console.log("Card Info: ",this.card_info)
+    this.set_percentage()
+    this.check_ammount()
   }
 }
 </script>
@@ -87,6 +100,9 @@ hr.solid{
     display: inline;
     transform: translate(140px,0px);
 }
+#info-img:hover{
+    cursor: pointer;
+    }
 #progress-bar{
     margin-top: 10px;
     margin-bottom: 20px;
