@@ -8,10 +8,9 @@
     <p id="account-text" class="card-text">{{card_info["adr"]}}</p>
     <p id="target-ammount-text" class="card-text">Target Ammount : {{card_info["monthAmount"]}} ETH</p>
     <img id="donor-img" src="@/assets/eth.png">
-    <div id="progress-bar" class="progress">
-     <!--Progress: <p>{{card_info[3]}}</p> -->
-  <div id="progress-bar-real" class="progress-bar progress-bar-striped bg-success" v-bind:style="{width: calculate_percentage + '%'}" role="progressbar" aria-valuemin="0" aria-valuemax="100"></div>
-</div>
+    <div class="progress">
+        <div class="progress-bar progress-bar-striped bg-success" v-bind:style="{width: calculate_percentage + '%'}" role="progressbar" :aria-valuenow="calculate_percentage" aria-valuemin="0" aria-valuemax="100"></div>
+    </div>
      <input v-model="donate_ammount" id="input-bar" class="form-control" placeholder="Ammount to donate (ETH)">
     <a @click="donate()" id="donate-button" href="#" class="btn btn-dark" style="visibility: visible;">Donate</a>
      <img id="info-img" src="@/assets/info.png">
@@ -57,6 +56,10 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+*, ::before, ::after {
+    background-repeat: repeat;
+    box-sizing: inherit;
+}
 .card{
     border-style: solid;
     border-color: rgb(75, 75, 75);
