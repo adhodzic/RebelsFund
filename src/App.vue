@@ -1,6 +1,6 @@
 <template>
   <div v-if="isDrizzleInitialized" id="app">
-    <nav class="navbar navbar-dark bg-dark">
+    <nav id="topbar" class="navbar navbar-dark bg-dark">
       <div class="container-fluid">
         <a class="navbar-brand"> The Rebel's Fund </a>
         {{getRole}}
@@ -65,7 +65,7 @@ export default {
           this.$store.dispatch("setCurrentUser", user);
         }else if(role == 1){
           const charity = await this.drizzleInstance.contracts.RebelsFund.methods.getCharity().call({from: sender})
-          console.log(charity)
+          console.log("Charity:" ,charity)
           this.$store.dispatch("setCurrentUser", charity);
         }
         this.$store.dispatch("updateRole", role);  
@@ -106,6 +106,10 @@ export default {
 
 
 <style lang="scss" scoped>
+#logo{
+  height: 30px;
+  width: 30px;
+}
 .navbar-brand{
   font-family:Georgia, 'Times New Roman', Times, serif;
   font-size: 40px;

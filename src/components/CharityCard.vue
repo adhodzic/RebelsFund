@@ -85,6 +85,7 @@ hr.solid{
 #input-bar{
     width: 220px;
     margin-bottom: 20px;
+    margin-top: 10px;
     border-style: solid;
     border-color:rgb(218, 121, 247);
 }
