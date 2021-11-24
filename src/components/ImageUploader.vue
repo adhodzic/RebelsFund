@@ -11,7 +11,7 @@
         v-bind:files="myFiles"
     />
     <div class="buttonContainer">
-		<button @click="postImage">Post</button>
+		<button class="btn btn-dark" id="btn-img" @click="postImage">Upload</button>
 	</div>
   </div>
 </template>
@@ -55,7 +55,7 @@
 			if (!file) return;
             // Dodaje sliku na IPFS te se dobiva response u kojemu se nalazi CID
             const ipfsResponse = await ipfs.add(file.getFileEncodeDataURL()).catch(err => {
-                console.log(err);
+                console.log("Error: ",err);
             });
             console.log(ipfsResponse)
         },
@@ -64,4 +64,11 @@
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
-<style scoped></style>
+<style scoped lang="scss">
+#btn-img{
+  border-style: solid;
+  border-width: 2px;
+  color: whitesmoke;
+  font-family: Georgia, "Times New Roman", Times, serif;
+}
+</style>

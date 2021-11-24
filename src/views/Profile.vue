@@ -51,6 +51,15 @@
           ></iframe>
         </div>
       </div>
+      <div class="row">
+        <hr class="solid">
+      </div>
+      <div class="row">
+        <div class="col-md">
+        <Settings></Settings>
+        </div>
+        <div class="col-md"></div>
+      </div>
       <div class="edit">
         <input type="text" />
       </div>
@@ -61,8 +70,17 @@
 <script>
 import store from "../store/store";
 import { mapGetters } from "vuex";
+import Settings from "../components/Settings.vue";
 export default {
   name: "Profile",
+  data(){
+    return{
+
+    }
+  },
+  components:{
+    Settings
+  },
   computed: {
     ...mapGetters(["getCurrentUser"]),
     ...mapGetters("drizzle", ["drizzleInstance", "isDrizzleInitialized"]),
@@ -77,6 +95,15 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+hr{
+  border-top: 3px solid rgb(218, 121, 247);
+}
+#expand {
+  border-style: solid;
+  border-color: black;
+  border-width: 0.5px;
+  color: black;
+}
 #box {
   border-style: solid;
   border-color: black;

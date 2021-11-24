@@ -3,6 +3,9 @@
     <nav id="topbar" class="navbar navbar-dark bg-dark">
       <div class="container-fluid">
         <a class="navbar-brand"> The Rebel's Fund </a>
+        <router-link to="/"><a href="#">
+            <img id="home" src="@/assets/home.png"></a>
+        </router-link> 
         {{getRole}}
         <div v-if="$route.name != 'Login'" class="profile">
           <router-link to="/profile"><a href="#">
@@ -106,6 +109,14 @@ export default {
 
 
 <style lang="scss" scoped>
+#home{
+    height: 40px;
+    width: 40px;
+    transform: translate(550px,0px);
+    background-color: whitesmoke;
+    border-radius: 50%;
+    opacity: 0.9;
+}
 #logo{
   height: 30px;
   width: 30px;
@@ -130,6 +141,9 @@ export default {
 @media (max-width: 768px){
   .navbar-brand{
     display: none;
+  }
+  #home{
+    transform: translate(250px,0px);
   }
 }
 </style>
