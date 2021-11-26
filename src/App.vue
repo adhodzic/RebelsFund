@@ -2,14 +2,20 @@
   <div v-if="isDrizzleInitialized" id="app">
     <nav id="topbar" class="navbar navbar-dark bg-dark">
       <div class="container-fluid">
-        <a class="navbar-brand"> The Rebel's Fund </a>
-        <router-link to="/"><a href="#">
-            <img id="home" src="@/assets/home.png"></a>
-        </router-link> 
-        {{getRole}}
+        <div class="brand">
+          <img class="logo" src="@/assets/RebelsFundLightLogo.png">
+          <a class="navbar-brand"> The Rebel's Fund </a>
+        </div>
+        <div class="menu">
+          <router-link v-if="$route.name != 'Login'" to="/">
+            <i class="fas fa-home"></i>
+          </router-link>
+          <input class="form-control search-input" type="search" placeholder="Search" aria-label="Search">
+          <button class="btn btn-outline-success search-btn" type="submit">Search</button>
+        </div>
         <div v-if="$route.name != 'Login'" class="profile">
-          <router-link to="/profile"><a href="#">
-            <img id="avatar" src="@/assets/user.png"></a>
+          <router-link to="/profile">
+            <i class="fas fa-user-circle"></i>
         </router-link>  
         </div>
       </div>
@@ -109,34 +115,67 @@ export default {
 
 
 <style lang="scss" scoped>
-#home{
-    height: 40px;
-    width: 40px;
-    transform: translate(550px,0px);
-    background-color: whitesmoke;
-    border-radius: 50%;
-    opacity: 0.9;
+.brand{
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
-#logo{
-  height: 30px;
-  width: 30px;
+.menu{
+  display: flex;
+  align-items: center;
+  justify-content: space-evenly;
+  column-gap: 10px;
+}
+.search-input{
+  font-size: 14px;
+  text-align: center;
+  height: 25px;
+  width: 150px;
+}
+.search-input:focus::placeholder {
+  color: transparent;
+}
+.search-input::placeholder{
+  text-align: center;
+  font-size: 14px;
+  transform: translateY(-1px);
+}
+.search-btn:hover{
+  border-color: rgb(247, 121, 121);
+  background: rgb(247, 121, 121);
+  color: rgb(33 37 41);
+}
+.search-btn{
+  height: 25px;
+  font-size: 12px;
+  padding: 1px 15px 2px 15px;
+  border-color: rgb(247, 121, 121);
+  color: rgb(247, 121, 121);
+}
+.fa-home{
+  color: white;
+  font-size: 20px;
+}
+.fa-home:hover{
+    box-shadow: 0 2px rgb(247, 121, 121);
+    transition: box-shadow 0.2s ease-in-out;
+}
+.logo{
+  width: 55px;
+  height: 55px;
 }
 .navbar-brand{
-  font-family:Georgia, 'Times New Roman', Times, serif;
-  font-size: 40px;
-  margin-left: 30px;
+  font-family: var(--bs-font-sans-serif);
+  font-size: 29px;
+  margin-left: 15px;
 }
 #topbar{
-   border-bottom: rgb(218, 121, 247);
+   border-bottom: rgb(247, 121, 121);
    border-style: solid;
 }
-#avatar{
-  height: 30px;
-  width: 30px;
+.fa-user-circle{
   color: whitesmoke;
-}
-#avatar:hover{
-  cursor: pointer;
+  font-size: 35px;
 }
 @media (max-width: 768px){
   .navbar-brand{

@@ -90,7 +90,6 @@ export default {
   },
   methods: {},
   mounted() {},
-  components: {},
 };
 </script>
 

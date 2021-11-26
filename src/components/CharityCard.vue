@@ -3,17 +3,17 @@
 <div class="card" style="width: 18rem;">
   <img src="https://logowik.com/content/uploads/images/753_wwf.jpg" class="card-img-top" alt="...">
   <div class="card-body">
-    <hr class="solid">
     <h5 id="title-text" class="card-title">{{utils.hexToUtf8(card_info["name"])}}</h5>
     <p id="account-text" class="card-text">{{card_info["adr"]}}</p>
-    <p id="target-ammount-text" class="card-text">Target Ammount : {{card_info["monthAmount"]}} ETH</p>
-    <img id="donor-img" src="@/assets/eth.png">
+    <p class="card-text target-ammount-text">Progress: {{card_info["recievedAmount"]/1000000000000000000}} / {{card_info["monthAmount"]}} ETH</p>
     <div class="progress">
         <div class="progress-bar progress-bar-striped bg-success" v-bind:style="{width: calculate_percentage + '%'}" role="progressbar" :aria-valuenow="calculate_percentage" aria-valuemin="0" aria-valuemax="100"></div>
     </div>
-     <input v-model="donate_ammount" id="input-bar" class="form-control" placeholder="Ammount to donate (ETH)">
-    <a @click="donate()" id="donate-button" href="#" class="btn btn-dark" style="visibility: visible;">Donate</a>
-     <img id="info-img" src="@/assets/info.png">
+     <input v-model="donate_ammount" class="form-control input-bar" placeholder="Amount to donate (ETH)">
+     <div class="footer">
+        <a @click="donate()" id="donate-button" href="#" class="btn btn-dark" style="visibility: visible;">Donate</a>
+        <i class="fas fa-info-circle"></i>
+     </div>
   </div>
 </div>
 </template>
@@ -34,7 +34,8 @@ export default {
     },
     data(){
         return{
-            donate_ammount: ""
+            donate_ammount: "",
+            value: 20
         }
     },
     methods:{
@@ -61,44 +62,47 @@ export default {
     box-sizing: inherit;
 }
 .card{
-    border-style: solid;
-    border-color: rgb(75, 75, 75);
+    box-shadow: 0 0 0 2px rgb(48, 48, 48);
 }
 .card-body{
-    background-color: rgb(248, 248, 248);   
+    background-color: rgb(226, 226, 226);   
 }
-hr.solid{
-    border: 1px solid rgb(0, 0, 0);
+.fa-info-circle{
+    font-size: 30px;
+}
+.footer{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
 }
 #account-text{
-    font-size: 14px;
+    font-size: 12px;
     opacity: 0.7;
-    font-family:Georgia, 'Times New Roman', Times, serif;
+    font-family: var(--bs-font-sans-serif);
 }
-#target-ammount-text{
-    font-family:Georgia, 'Times New Roman', Times, serif;
-    display: inline;
+.target-ammount-text{
+    margin-bottom: 5px;
+    font-weight: 500;
+    font-size: 14px;
+    color: rgb(31, 31, 31);
+    font-family: var(--bs-font-sans-serif);
 }
 #title-text{
-    font-family:Georgia, 'Times New Roman', Times, serif;
+    font-size: 24px;
+    font-family: var(--bs-font-sans-serif);
 }
-#input-bar{
-    width: 220px;
+.input-bar{
+    width: 100%;
     margin-bottom: 20px;
     margin-top: 10px;
     border-style: solid;
-    border-color:rgb(218, 121, 247);
+    border-color:rgb(247, 121, 121);
 }
 #donor-img{
     height: 40px;
     width: 40px;
     display: inline;
-}
-#info-img{
-    height: 30px;
-    width: 30px;
-    display: inline;
-    transform: translate(140px,0px);
 }
 #info-img:hover{
     cursor: pointer;
@@ -106,8 +110,5 @@ hr.solid{
 #progress-bar{
     margin-top: 10px;
     margin-bottom: 20px;
-}
-#donate-button{
-    display: inline;
 }
 </style>
