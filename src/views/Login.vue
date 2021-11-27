@@ -38,7 +38,7 @@
                 Upload image that represents your fund
               </v-expansion-panel-header>
               <v-expansion-panel-content>
-                <ImageUploader></ImageUploader>
+                <ImageUploader ref="image"></ImageUploader>
               </v-expansion-panel-content>
             </v-expansion-panel>
           </v-expansion-panels>
@@ -62,6 +62,7 @@
 </template>
 
 <script>
+import ipfs from "../services/ipfs"
 import { mapGetters } from "vuex";
 import store from "../store/store";
 import ImageUploader from "../components/ImageUploader.vue";
@@ -97,14 +98,18 @@ export default {
   methods: {
     //Method which is called on non existing user to register it self as a charity role
     async addAsCharity() {
+      let image = await this.postImage();
+      console.log(image.path);
       if (this.isDrizzleInitialized) {
         if (this.charity_name != "" && this.charity_month_amount != "") {
           await this.drizzleInstance.contracts.RebelsFund.methods
             .signCharity(
               this.utils.toHex(this.charity_name),
-              parseFloat(this.charity_month_amount)
+              parseFloat(this.charity_month_amount),
+              image.path
             )
             .send();
+          await this.$parent.getUserRole();
           this.$router.push({ name: "Home" });
         } else {
           alert("Please enter all fields");
@@ -118,13 +123,24 @@ export default {
           await this.drizzleInstance.contracts.RebelsFund.methods
             .signUser(this.utils.toHex(this.donor_name))
             .send();
+          await this.$parent.getUserRole();
           this.$router.push({ name: "Home" });
         } else {
           alert("Please enter all fields");
         }
       }
     },
-  },
+    async postImage(){
+      const file = this.$refs.image.getFiles();
+			if (!file) return;
+      // Dodaje sliku na IPFS te se dobiva response u kojemu se nalazi CID
+      const ipfsResponse = await ipfs.add(file.getFileEncodeDataURL()).catch(err => {
+          console.log("Error: ",err);
+          return;
+      });
+      return ipfsResponse;
+      },
+    }
 };
 </script>
 

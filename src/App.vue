@@ -10,10 +10,11 @@
           <router-link v-if="$route.name != 'Login'" to="/">
             <i class="fas fa-home"></i>
           </router-link>
-          <input class="form-control search-input" type="search" placeholder="Search" aria-label="Search">
-          <button class="btn btn-outline-success search-btn" type="submit">Search</button>
+          <input v-if="$route.name == 'Home'" class="form-control search-input" type="search" placeholder="Search" aria-label="Search">
+          <!--<button class="btn btn-outline-success search-btn" type="submit">Search</button>-->
         </div>
         <div v-if="$route.name != 'Login'" class="profile">
+          <p v-if="getCurrentUser.name != null && getCurrentUser != ''" class="profile-name">{{utils.toUtf8(getCurrentUser.name)}}</p>
           <router-link to="/profile">
             <i class="fas fa-user-circle"></i>
         </router-link>  
@@ -34,6 +35,7 @@
 
 <script>
 import { mapGetters } from "vuex"
+import { useRoute } from 'vue-router'
 export default {
   name: "app",
   data(){
@@ -46,9 +48,12 @@ export default {
   computed: {
     ...mapGetters("drizzle", ["drizzleInstance", "isDrizzleInitialized"]),
     ...mapGetters("contracts", ["getContractData"]),
-    ...mapGetters(["getRole"]),
+    ...mapGetters(["getRole", "getCurrentUser"]),
     utils() {
       return this.drizzleInstance.web3.utils
+    },
+    getRoute(){
+      return useRoute
     }
   },
   methods: {
@@ -74,8 +79,13 @@ export default {
           this.$store.dispatch("setCurrentUser", user);
         }else if(role == 1){
           const charity = await this.drizzleInstance.contracts.RebelsFund.methods.getCharity().call({from: sender})
-          console.log("Charity:" ,charity)
-          this.$store.dispatch("setCurrentUser", charity);
+          let obj = {
+            name: charity["name"],
+            adr: charity["adr"],
+            monthAmount: charity["monthAmount"],
+            recievedAmounth: charity["recievedAmount"]
+          }
+          this.$store.dispatch("setCurrentUser", obj);
         }
         this.$store.dispatch("updateRole", role);  
         if(role == 0 && this.$route.name != 'Login'){
@@ -83,7 +93,7 @@ export default {
         }else if(role > 0 && this.$route == 'Login'){
           this.$router.push("/")
         }
-      }   
+      }
     },
     async listenMMAccount() {
       let self = this
@@ -123,7 +133,8 @@ export default {
 .menu{
   display: flex;
   align-items: center;
-  justify-content: space-evenly;
+  justify-content: space-between;
+  margin-right: 100px;
   column-gap: 10px;
 }
 .search-input{
@@ -152,9 +163,21 @@ export default {
   border-color: rgb(247, 121, 121);
   color: rgb(247, 121, 121);
 }
+.profile{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  column-gap: 10px;
+}
+.profile-name{
+  color: white;
+  text-align: center;
+  margin-bottom: 6px;
+}
 .fa-home{
   color: white;
   font-size: 20px;
+  margin-top: 3px;
 }
 .fa-home:hover{
     box-shadow: 0 2px rgb(247, 121, 121);

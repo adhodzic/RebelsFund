@@ -1,7 +1,7 @@
 <template>
 
 <div class="card" style="width: 18rem;">
-  <img src="https://logowik.com/content/uploads/images/753_wwf.jpg" class="card-img-top" alt="...">
+  <img :src="img" class="card-img-top" alt="...">
   <div class="card-body">
     <h5 id="title-text" class="card-title">{{utils.hexToUtf8(card_info["name"])}}</h5>
     <p id="account-text" class="card-text">{{card_info["adr"]}}</p>
@@ -35,7 +35,9 @@ export default {
     data(){
         return{
             donate_ammount: "",
-            value: 20
+            value: 20,
+            loaded: false,
+            img: null
         }
     },
     methods:{
@@ -47,9 +49,15 @@ export default {
             if(this.calculate_percentage >= 100){
                 document.getElementById("donate-button").style.visibility="hidden"   
             }
+        },
+        async load_image(){
+            let img = await fetch(`http://127.0.0.1:8081/ipfs/${this.card_info.image}/`);
+		    this.img = await img.text();
+            this.loaded = true; // Dohvati base64URL
         }
     },
     mounted(){
+    this.load_image();
     console.log("Card Info: ",this.card_info)
     this.check_ammount()
   }
@@ -62,10 +70,12 @@ export default {
     box-sizing: inherit;
 }
 .card{
-    box-shadow: 0 0 0 2px rgb(48, 48, 48);
+    border-radius: 15px;
+    box-shadow: 0 0 0 1px rgb(48, 48, 48);
+    overflow:hidden;
 }
 .card-body{
-    background-color: rgb(226, 226, 226);   
+    background-color: rgb(241, 241, 241);   
 }
 .fa-info-circle{
     font-size: 30px;

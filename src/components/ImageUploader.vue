@@ -5,14 +5,15 @@
         ref="pond"
         label-idle="Drop files here or <span class='filepond--label-action'>Browse</span>"
         allow-multiple="true"
-        instantUpload= false,
+        instantUpload= false
+        allowImageCrop= true
         allowProcess= false
         accepted-file-types="image/jpeg, image/png"
         v-bind:files="myFiles"
     />
-    <div class="buttonContainer">
+    <!-- <div class="buttonContainer">
 		<button class="btn btn-dark" id="btn-img" @click="postImage">Upload</button>
-	</div>
+	</div> -->
   </div>
 </template>
 
@@ -34,12 +35,14 @@
   import FilePondPluginFileValidateType from 'filepond-plugin-file-validate-type'
   import FilePondPluginImagePreview from 'filepond-plugin-image-preview'
   import FilePondPluginFileEncode from "filepond-plugin-file-encode";
+  import FilePondPluginImageCrop from 'filepond-plugin-image-crop';
 
   // Create component
   const FilePond = vueFilePond(
           FilePondPluginFileValidateType,
           FilePondPluginImagePreview,
           FilePondPluginFileEncode,
+          FilePondPluginImageCrop
   )
   export default {
     name: 'FilePondDemo',
@@ -59,6 +62,9 @@
             });
             console.log(ipfsResponse)
         },
+        getFiles(){
+          return this.$refs.pond.getFiles()[0];
+        }
     }
   }
 </script>

@@ -9,6 +9,10 @@ import drizzleOptions from "./drizzleOptions"
 import vuetify from './plugins/vuetify'
 
 import VuePageTransition from 'vue-page-transition'
+import VueRouter from 'vue-router'
+import Vuetify from 'vuetify'
+
+Vue.use(VueRouter)
 
 Vue.use(VuePageTransition)
 

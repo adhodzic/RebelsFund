@@ -6,7 +6,10 @@ Vue.use(Vuex);
 export default new Vuex.Store({
   state: {
     role: -1,
-    currentUser: [],
+    name: null,
+    adr: null,
+    recievedAmount: null,
+    monthAmount: null,
     charitys: []
   },
   getters:{
@@ -17,7 +20,13 @@ export default new Vuex.Store({
       return state.charitys
     },
     getCurrentUser: state =>{
-      return state.currentUser
+      let user = {
+        name: state.name,
+        adr: state.adr,
+        recievedAmount: state.recievedAmount,
+        monthAmount: state.monthAmount
+      }
+      return user
     }
   },
   mutations: {
@@ -28,7 +37,10 @@ export default new Vuex.Store({
       state.charitys = charitys
     },
     setCurrentUser(state, {currentUser}){
-      state.currentUser = currentUser
+      state.name = currentUser.name;
+      state.adr = currentUser.adr;
+      state.recievedAmount = currentUser.recievedAmount;
+      state.monthAmount = currentUser.monthAmount;
     }
   },
   actions: {
