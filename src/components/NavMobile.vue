@@ -1,16 +1,17 @@
 <template>
-  <div v-if="isDrizzleInitialized" id="app">
-    <nav id="topbar" class="navbar navbar-dark bg-dark">
-      <div class="container-fluid">
-        <div class="brand">
-          <img
-            style="border-radius: 20%"
-            class="logo"
-            src="@/assets/RebelsFundLightLogo.png"
-          />
-          <a class="navbar-brand"> The Rebel's Fund </a>
-        </div>
-        <div class="menu">
+    <div class="mobile">
+         <div id="nav-mobile">
+      <img
+        data-bs-toggle="collapse"
+        href="#collapseView"
+        role="button"
+        class="logo"
+        src="@/assets/RebelsFundLightLogo.png"
+      />
+      <a class="navbar-brand"> The Rebel's Fund </a>
+      <div class="collapse" id="collapseView">
+        <div class="card card-body">
+                <div class="menu">
           <router-link v-if="$route.name != 'Login'" to="/">
             <i class="fas fa-home"></i>
           </router-link>
@@ -24,49 +25,29 @@
           />
           <!--<button class="btn btn-outline-success search-btn" type="submit">Search</button>-->
         </div>
-        <div v-if="$route.name != 'Login'" class="profile">
+          <div v-if="$route.name != 'Login'" class="profile">
+             <router-link to="/profile">
+            <i class="fas fa-user-circle"></i>
+          </router-link>
           <p
             v-if="getCurrentUser.name != null && getCurrentUser != ''"
             class="profile-name"
           >
             {{ utils.toUtf8(getCurrentUser.name) }}
           </p>
-          <router-link to="/profile">
-            <i class="fas fa-user-circle"></i>
-          </router-link>
+        </div>
         </div>
       </div>
-    </nav>
-
-   <NavMobile id="nav-mobile"></NavMobile>
-
-    <router-view v-if="getRole != -1"></router-view>
-    <!-- <h1>You are signed-in</h1> -->
-    <nav class="navbar fixed-bottom navbar-dark bg-dark"></nav>
-  </div>
-  <div v-else>
-    <p>Waiting for metamask</p>
-    <!--  First sign in with metamask... -->
-  </div>
+    </div>
+    </div>
 </template>
 
 <script>
 import { mapGetters } from "vuex";
 import { useRoute } from "vue-router";
-import NavMobile from "../src/components/NavMobile.vue"
 export default {
-  name: "app",
-  components:{
-    NavMobile
-  },
-  data() {
-    return {
-      name: "",
-      amount: "",
-      char: "",
-    };
-  },
-  computed: {
+    name:'NavMobile',
+    computed: {
     ...mapGetters("drizzle", ["drizzleInstance", "isDrizzleInitialized"]),
     ...mapGetters("contracts", ["getContractData"]),
     ...mapGetters(["getRole", "getCurrentUser"]),
@@ -77,7 +58,7 @@ export default {
       return useRoute;
     },
   },
-  methods: {
+   methods: {
     //Method used to check if drizzle is initialized and if it's not it will wait and check every 500ms
     async checkState() {
       let state = this.isDrizzleInitialized;
@@ -132,7 +113,7 @@ export default {
       });
     },
   },
-  mounted() {
+    mounted() {
     this.listenMMAccount();
     /* window.ethereum.on("accountsChanged", async function() {
         console.log();
@@ -148,10 +129,9 @@ export default {
       method: "getAllCharity",
       methodArgs: [],
     });
-  },
-};
+  }
+}
 </script>
-
 
 <style lang="scss" scoped>
 .card-body{
