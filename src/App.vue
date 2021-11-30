@@ -43,8 +43,17 @@
     <!-- <h1>You are signed-in</h1> -->
     <nav class="navbar fixed-bottom navbar-dark bg-dark"></nav>
   </div>
-  <div v-else>
-    <p>Waiting for metamask</p>
+ <div class="metamask" v-else>
+    <a>Waiting for metamask</a>
+    <div style="margin-left:15px;" class="spinner-border text-dark" role="status">
+  <span class="visually-hidden">Loading...</span>
+</div>
+     <div class="animation">
+      <img
+            class="logo-anim"
+            src="@/assets/metamask.png"
+          />
+    </div>
     <!--  First sign in with metamask... -->
   </div>
 </template>
@@ -151,6 +160,37 @@ export default {
 
 
 <style lang="scss" scoped>
+
+ @keyframes image {
+     0% {
+    left: 0;
+  }
+  50% {
+    left: 200px;
+  }
+  100% {
+    left: 0;    
+  }
+  }
+.animation{
+  margin-top: 50px;
+}
+.logo-anim{
+  width: 145px;
+  height: 145px;
+  animation-name: image;
+  animation-duration: 5s;
+  position: relative;
+  animation-iteration-count: infinite;
+  animation-direction: alternate;
+}
+.metamask{
+  text-align: center;
+  font-family: var(--bs-font-sans-serif);
+  font-size: 32px;
+  margin-top:100px;
+  font-style: italic;
+}
 .card-body{
   background-color: black;
 }
@@ -225,6 +265,26 @@ export default {
   font-size: 35px;
 }
 @media (max-width: 768px) {
+  @keyframes image {
+     0% {
+    left: 0;
+  }
+  50% {
+    left: 100px;
+  }
+  100% {
+    left: 0;    
+  }
+  }
+  .logo-anim{
+  width: 145px;
+  height: 145px;
+  animation-name: image;
+  animation-duration: 4s;
+  position: relative;
+  animation-iteration-count: infinite;
+  animation-direction: alternate;
+}
   #topbar {
     display: none;
   }

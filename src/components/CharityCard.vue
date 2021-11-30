@@ -1,7 +1,7 @@
 <template>
 
 <div class="card" style="width: 18rem;">
-  <img :src="img" class="card-img-top" alt="...">
+  <img :src="img" class="card-img-top" style="height:180px;" alt="...">
   <div class="card-body">
     <h5 id="title-text" class="card-title">{{utils.hexToUtf8(card_info["name"])}}</h5>
     <p id="account-text" class="card-text">{{card_info["adr"]}}</p>
