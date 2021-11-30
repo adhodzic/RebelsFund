@@ -20,6 +20,7 @@
 
 <script>
 import { mapGetters } from "vuex"
+import image from "../assets/RebelsFundLightLogo.png"
 export default {
     name: "CharityCard",
     props: ["card_info"],
@@ -37,7 +38,7 @@ export default {
             donate_ammount: "",
             value: 20,
             loaded: false,
-            img: null
+            img: image
         }
     },
     methods:{
@@ -51,6 +52,8 @@ export default {
             }
         },
         async load_image(){
+            console.log(this.card_info.image)
+            if(this.card_info.image == "") return;
             let img = await fetch(`http://127.0.0.1:8081/ipfs/${this.card_info.image}/`);
 		    this.img = await img.text();
             this.loaded = true; // Dohvati base64URL

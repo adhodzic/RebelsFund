@@ -32,16 +32,7 @@
             placeholder="ETH target donnation ammount"
             aria-label=".form-control-lg"
           />
-          <v-expansion-panels>
-            <v-expansion-panel id="expand">
-              <v-expansion-panel-header>
-                Upload image that represents your fund
-              </v-expansion-panel-header>
-              <v-expansion-panel-content>
-                <ImageUploader ref="image"></ImageUploader>
-              </v-expansion-panel-content>
-            </v-expansion-panel>
-          </v-expansion-panels>
+          <ImageUploader ref="image"></ImageUploader>
         </div>
       </div>
 
@@ -62,7 +53,7 @@
 </template>
 
 <script>
-import ipfs from "../services/ipfs"
+import ipfs from "../services/ipfs";
 import { mapGetters } from "vuex";
 import store from "../store/store";
 import ImageUploader from "../components/ImageUploader.vue";
@@ -99,16 +90,16 @@ export default {
     //Method which is called on non existing user to register it self as a charity role
     async addAsCharity() {
       let image = await this.postImage();
-      console.log(image.path);
+	  console.log(image)
+      if(image == null){
+		  image = {
+			  path: ""
+		  }
+	  }
+	  console.log(image.path);
       if (this.isDrizzleInitialized) {
         if (this.charity_name != "" && this.charity_month_amount != "") {
-          await this.drizzleInstance.contracts.RebelsFund.methods
-            .signCharity(
-              this.utils.toHex(this.charity_name),
-              parseFloat(this.charity_month_amount),
-              image.path
-            )
-            .send();
+          await this.drizzleInstance.contracts.RebelsFund.methods.signCharity(this.utils.toHex(this.charity_name),parseFloat(this.charity_month_amount),image.path).send();
           await this.$parent.getUserRole();
           this.$router.push({ name: "Home" });
         } else {
@@ -130,17 +121,19 @@ export default {
         }
       }
     },
-    async postImage(){
+    async postImage() {
       const file = this.$refs.image.getFiles();
-			if (!file) return;
+      if (!file) return null;
       // Dodaje sliku na IPFS te se dobiva response u kojemu se nalazi CID
-      const ipfsResponse = await ipfs.add(file.getFileEncodeDataURL()).catch(err => {
-          console.log("Error: ",err);
+      const ipfsResponse = await ipfs
+        .add(file.getFileEncodeDataURL())
+        .catch((err) => {
+          console.log("Error: ", err);
           return;
-      });
+        });
       return ipfsResponse;
-      },
-    }
+    },
+  },
 };
 </script>
 

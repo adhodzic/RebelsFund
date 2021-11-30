@@ -54,8 +54,8 @@
     },
     methods:{
         async postImage(){
-            const file = this.$refs.pond.getFiles()[0];
-			if (!file) return;
+            const file = this.getFiles();
+			if (!file) return -1;
             // Dodaje sliku na IPFS te se dobiva response u kojemu se nalazi CID
             const ipfsResponse = await ipfs.add(file.getFileEncodeDataURL()).catch(err => {
                 console.log("Error: ",err);

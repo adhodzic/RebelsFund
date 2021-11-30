@@ -22,7 +22,6 @@
             placeholder="Search"
             aria-label="Search"
           />
-          <!--<button class="btn btn-outline-success search-btn" type="submit">Search</button>-->
         </div>
         <div v-if="$route.name != 'Login'" class="profile">
           <p
@@ -113,6 +112,7 @@ export default {
             adr: charity["adr"],
             monthAmount: charity["monthAmount"],
             recievedAmounth: charity["recievedAmount"],
+            image: charity["image"]
           };
           this.$store.dispatch("setCurrentUser", obj);
         }
@@ -134,9 +134,6 @@ export default {
   },
   mounted() {
     this.listenMMAccount();
-    /* window.ethereum.on("accountsChanged", async function() {
-        console.log();
-    }); */
     this.$drizzleEvents.$on("drizzle/contractEvent", (payload) => {
       //alert(payload.data.message + payload.data.name)
     });
@@ -187,18 +184,6 @@ export default {
   font-size: 14px;
   transform: translateY(-1px);
 }
-.search-btn:hover {
-  border-color: rgb(247, 121, 121);
-  background: rgb(247, 121, 121);
-  color: rgb(33 37 41);
-}
-.search-btn {
-  height: 25px;
-  font-size: 12px;
-  padding: 1px 15px 2px 15px;
-  border-color: rgb(247, 121, 121);
-  color: rgb(247, 121, 121);
-}
 .profile {
   display: flex;
   align-items: center;
@@ -209,7 +194,7 @@ export default {
   color: white;
   text-align: center;
   margin-bottom: 6px;
-  font-family: Georgia, "Times New Roman", Times, serif;
+  font-family: var(--bs-font-sans-serif);
   font-size: 20px;
 }
 .fa-home {
@@ -222,7 +207,7 @@ export default {
   transition: box-shadow 0.2s ease-in-out;
 }
 .logo {
-  width: 55px;
+  width: 46px;
   height: 55px;
   border-radius: 20%;
 }
