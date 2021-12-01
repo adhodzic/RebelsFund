@@ -4,24 +4,32 @@
       <div class="row">
         <div class="col-md">
           <img
+            class="info"
             id="profile-img"
             src="https://logowik.com/content/uploads/images/753_wwf.jpg"
           />
+          <div id="image-upload">
+             <ImageUploader></ImageUploader>
+          </div>
           <div class="shadow-lg p-3 mb-5 bg-body rounded" id="box">
-            <h3 id="text-default">Fund name : World Wildlife Fund</h3>
+            <h3 class="info" id="text-default">World Wildlife Fund</h3>
+            <input type="text" class="form-control" :value="name">
             <h3 id="account">0x94Aae3fB6D4Eb2bC4DD46124A789f9273E50C962</h3>
             <i id="icon" class="fas fa-map-marker-alt"></i>
-            <h3 id="text-default-2">
+            <h3 class="info" id="text-default-2">
               Av. du Mont-Blanc 1196 ,Gland,Switzerland
             </h3>
+            <input type="text" class="form-control" :value="location">
             <div id="separator"></div>
             <i id="icon" class="fas fa-envelope"></i>
-            <h3 id="text-default-2">worldwildlifefund@gmail.com</h3>
+            <h3 class="info" id="text-default-2">worldwildlifefund@gmail.com</h3>
+            <input type="text" class="form-control" :value="email">
           </div>
         </div>
         <div class="col-md">
-          <div class="shadow-lg p-3 mb-5 bg-body rounded" id="box">
-            <h3 id="text-default-3">Our goal is to fundraise : 20 ETH</h3>
+          <div class="shadow-lg p-3 mb-5 bg-body rounded" id="box-2">
+            <h3 class="info" id="text-default-3">Our goal is to fundraise : 20 ETH</h3>
+            <input type="text" class="form-control" :value="target_ammount">
             <img id="eth-img" src="@/assets/eth.png" />
             <div></div>
             <h3 id="text-default-3">Fundraised: 4 ETH</h3>
@@ -39,8 +47,9 @@
               ></div>
             </div>
           </div>
-          <iframe
-          id="ytvideo"
+          <Settings></Settings>
+      <!-- <iframe
+            id="ytvideo"
             width="550"
             height="285"
             src="https://www.youtube.com/embed/Tss6HtHlLuw"
@@ -48,7 +57,7 @@
             frameborder="0"
             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
             allowfullscreen
-          ></iframe>
+          ></iframe> --->
         </div>
       </div>
       <div class="row">
@@ -56,7 +65,8 @@
       </div>
       <div class="row">
         <div class="col-md">
-        <Settings></Settings>
+          <i @click="update_info" id="settings" class="fas fa-sliders-h fa-lg"></i>
+          <button @click="save_changes" id="info-btn" type="submit" class="btn btn-dark btn-sm">Save Changes</button>
         </div>
         <div class="col-md"></div>
       </div>
@@ -71,15 +81,20 @@
 import store from "../store/store";
 import { mapGetters } from "vuex";
 import Settings from "../components/Settings.vue";
+import ImageUploader from "../components/ImageUploader.vue"
 export default {
   name: "Profile",
   data(){
     return{
-
+      name:'World wildlife fund',
+      location:' Av. du Mont-Blanc 1196 ,Gland,Switzerland',
+      email:'worldwildlifefund@gmail.com',
+      target_ammount:'20'
     }
   },
   components:{
-    Settings
+    Settings,
+    ImageUploader
   },
   computed: {
     ...mapGetters(["getCurrentUser"]),
@@ -88,12 +103,63 @@ export default {
       return this.drizzleInstance.web3.utils;
     },
   },
-  methods: {},
-  mounted() {},
+  methods: {
+    update_info(){
+      var x = document.getElementsByClassName("info");
+      var y = document.getElementsByClassName("form-control");
+      var z = document.getElementById("info-btn");
+      var v = document.getElementById("image-upload");
+
+      for (var i=0;i<x.length;i+=1){
+        x[i].style.display = 'none';
+      }
+      for (var i=0;i<y.length;i+=1){
+        y[i].style.display = 'inline';
+      }
+      z.style.display = 'inline';
+      v.style.display = 'inline';
+      
+    },
+    save_changes(){
+      var x = document.getElementsByClassName("info");
+      var y = document.getElementsByClassName("form-control");
+      var z = document.getElementById("info-btn");
+      var v = document.getElementById("image-upload");
+
+      for (var i=0;i<x.length;i+=1){
+        x[i].style.display = 'inline';
+      }
+        for (var i=0;i<y.length;i+=1){
+        y[i].style.display = 'none';
+      }
+       z.style.display = 'none';
+       v.style.display = 'none';
+    }
+  },
+  mounted() {
+    
+  },
 };
 </script>
 
 <style lang="scss" scoped>
+#image-upload{
+  display: none;
+}
+#info-btn{
+  color: whitesmoke;
+  margin-left: 20px;
+  display:none;
+}
+.form-control{
+  display:none;
+  width:400px;
+  margin-bottom: 5px;
+  border-color: rgb(247, 121, 121);
+}
+#settings:hover{
+  cursor:pointer;
+}
 hr{
   border-top: 3px solid rgb(218, 121, 247);
 }
@@ -104,6 +170,12 @@ hr{
   color: black;
 }
 #box {
+  border-style: solid;
+  border-color: black;
+  border-width: 1px;
+  padding: 15px;
+  border-radius: 10px;
+}#box-2 {
   border-style: solid;
   border-color: black;
   border-width: 1px;
@@ -171,6 +243,11 @@ hr{
   margin-bottom: 15px;
 }
 @media (max-width: 768px){
+  .form-control{
+  display:none;
+  width:250px;
+  margin-bottom: 5px;
+}
   #account{
     font-size: 12px;
   }

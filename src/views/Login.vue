@@ -37,12 +37,12 @@
       </div>
 
       <div class="row">
-        <div class="col-md">
+        <div  style="margin-bottom:50px;"  class="col-md">
           <button id="btn-login" @click="addAsDonor" class="btn btn-dark">
             Donor Sign in
           </button>
         </div>
-        <div class="col-md">
+        <div style="margin-bottom:50px;" class="col-md">
           <button id="btn-login" @click="addAsCharity" class="btn btn-dark">
             Charity Sign in
           </button>
