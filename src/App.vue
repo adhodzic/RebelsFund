@@ -121,7 +121,9 @@ export default {
             adr: charity["adr"],
             monthAmount: charity["monthAmount"],
             recievedAmounth: charity["recievedAmount"],
-            image: charity["image"]
+            image: charity["image"],
+            location: charity["location"],
+            email: charity["email"]
           };
           this.$store.dispatch("setCurrentUser", obj);
         }

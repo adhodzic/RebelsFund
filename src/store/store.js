@@ -10,6 +10,8 @@ export default new Vuex.Store({
     adr: null,
     recievedAmount: null,
     monthAmount: null,
+    location: null,
+    email: null,
     charitys: []
   },
   getters:{
@@ -24,7 +26,9 @@ export default new Vuex.Store({
         name: state.name,
         adr: state.adr,
         recievedAmount: state.recievedAmount,
-        monthAmount: state.monthAmount
+        monthAmount: state.monthAmount,
+        location: state.location,
+        email: state.email
       }
       return user
     }
@@ -41,6 +45,8 @@ export default new Vuex.Store({
       state.adr = currentUser.adr;
       state.recievedAmount = currentUser.recievedAmount;
       state.monthAmount = currentUser.monthAmount;
+      state.email = currentUser.email;
+      state.location = currentUser.location;
     }
   },
   actions: {

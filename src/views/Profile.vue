@@ -1,44 +1,82 @@
 <template>
   <div class="profile">
     <div class="container">
-      <div class="row">
-        <div class="col-md">
-          <img
+      <div style="justify-content: center;" class="row">
+        <img
             class="info"
             id="profile-img"
             src="https://logowik.com/content/uploads/images/753_wwf.jpg"
           />
-          <div id="image-upload">
-             <ImageUploader></ImageUploader>
-          </div>
+      </div>
+      <div class="row">
+        <div style="padding-bottom: 0px; padding-left: 30px" class="col-md">
+        <i id="icon" v-if="!edit_mode" @click="update_info" class="fas fa-cog"></i>
+        <i id="icon" v-if="edit_mode" @click="close" class="far fa-window-close"></i>
+        <i id="icon" v-if="edit_mode" @click="save_changes" class="far fa-save"></i>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md">
           <div class="shadow-lg p-3 mb-5 bg-body rounded" id="box">
-            <h3 class="info" id="text-default">World Wildlife Fund</h3>
-            <input type="text" class="form-control" :value="name">
-            <h3 id="account">0x94Aae3fB6D4Eb2bC4DD46124A789f9273E50C962</h3>
-            <i id="icon" class="fas fa-map-marker-alt"></i>
-            <h3 class="info" id="text-default-2">
-              Av. du Mont-Blanc 1196 ,Gland,Switzerland
-            </h3>
-            <input type="text" class="form-control" :value="location">
+            <div class="general-header">
+              <p class="header-title">General information</p>
+            </div>
             <div id="separator"></div>
-            <i id="icon" class="fas fa-envelope"></i>
-            <h3 class="info" id="text-default-2">worldwildlifefund@gmail.com</h3>
-            <input type="text" class="form-control" :value="email">
+            <div class="inline-row">
+              <div id="icon">
+                <i class="fas fa-user"></i>
+              </div>
+              <p class="info" style="width: 100px;">Name:</p>
+              <p v-if="!edit_mode" class="info">{{getName}}</p>
+              <i v-if="!edit_mode" class="far fa-question-circle"></i>
+              <!--If in edit mode show input-->
+              <input v-if="edit_mode" type="text" class="form-control" :value="getName">
+            </div>
+            <div id="separator"></div>
+            <div class="inline-row">
+              <div id="icon">
+                <i class="fas fa-map-marker-alt"></i>
+              </div>
+              <p class="info" style="width: 100px;">Address:</p>
+              <p v-if="!edit_mode" class="info">{{getLocation}}</p>
+              <!--If in edit mode show input-->
+              <input v-if="edit_mode" type="text" class="form-control" :value="getLocation">
+            </div>
+            <div id="separator"></div>
+            <div class="inline-row">
+              <i id="icon" class="fas fa-envelope"></i>
+              <p class="info" style="width: 100px;">Email:</p>
+              <p v-if="!edit_mode" class="info">{{getEmail}}</p>
+              <!--If in edit mode show input-->
+              <input v-if="edit_mode" type="text" class="form-control" :value="getEmail">
+            </div>
+            <div id="separator"></div>
+            <div v-if="edit_mode">
+             <ImageUploader></ImageUploader>
+            </div>
           </div>
         </div>
-        <div class="col-md">
-          <div class="shadow-lg p-3 mb-5 bg-body rounded" id="box-2">
-            <h3 class="info" id="text-default-3">Our goal is to fundraise : 20 ETH</h3>
-            <input type="text" class="form-control" :value="target_ammount">
+        <div v-if="getRole == 1" class="col-md">
+          <div class="shadow-lg p-3 mb-5 bg-body rounded" id="box">
+            <div class="general-header">
+              <p class="header-title">Funding information</p>
+            </div>
+            <div id="separator"></div>
+            <div class="inline-row">
+              <i id="icon" class="fas fa-coins"></i>
+              <p class="info" style="width: 100px;">Ether:</p>
+              <p v-if="!edit_mode" class="info">{{getCurrentUser.monthAmount}}</p>
+              <input v-if="edit_mode" type="text" class="form-control" :value="getCurrentUser.monthAmount">
+              <img id="eth-img" src="@/assets/eth.png" />
+            </div>
+            <div id="separator"></div>
+              <div class="inline-row">
+              <p class="info">Fundraised: 4 ETH</p>
             <img id="eth-img" src="@/assets/eth.png" />
-            <div></div>
-            <h3 id="text-default-3">Fundraised: 4 ETH</h3>
-            <div id="spinner" class="spinner-border" role="status">
-              <span class="sr-only">Loading...</span>
             </div>
             <div class="progress">
               <div
-                class="progress-bar bg-success"
+                class="progress-bar-striped bg-success"
                 role="progressbar"
                 style="width: 25%"
                 aria-valuenow="25"
@@ -47,31 +85,7 @@
               ></div>
             </div>
           </div>
-          <Settings></Settings>
-      <!-- <iframe
-            id="ytvideo"
-            width="550"
-            height="285"
-            src="https://www.youtube.com/embed/Tss6HtHlLuw"
-            title="YouTube video player"
-            frameborder="0"
-            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-            allowfullscreen
-          ></iframe> --->
         </div>
-      </div>
-      <div class="row">
-        <hr class="solid">
-      </div>
-      <div class="row">
-        <div class="col-md">
-          <i @click="update_info" id="settings" class="fas fa-sliders-h fa-lg"></i>
-          <button @click="save_changes" id="info-btn" type="submit" class="btn btn-dark btn-sm">Save Changes</button>
-        </div>
-        <div class="col-md"></div>
-      </div>
-      <div class="edit">
-        <input type="text" />
       </div>
     </div>
   </div>
@@ -86,10 +100,10 @@ export default {
   name: "Profile",
   data(){
     return{
-      name:'World wildlife fund',
       location:' Av. du Mont-Blanc 1196 ,Gland,Switzerland',
       email:'worldwildlifefund@gmail.com',
-      target_ammount:'20'
+      target_ammount:'20',
+      edit_mode:false,
     }
   },
   components:{
@@ -97,43 +111,31 @@ export default {
     ImageUploader
   },
   computed: {
-    ...mapGetters(["getCurrentUser"]),
+    ...mapGetters(["getRole","getCurrentUser"]),
     ...mapGetters("drizzle", ["drizzleInstance", "isDrizzleInitialized"]),
     utils() {
       return this.drizzleInstance.web3.utils;
     },
+    getName() {
+      if(this.getCurrentUser.name)return this.utils.toUtf8(this.getCurrentUser.name)
+      else ""
+    },
+    getEmail(){
+      return this.getCurrentUser.email
+    },
+    getLocation(){
+      return this.getCurrentUser.location
+    }
   },
   methods: {
     update_info(){
-      var x = document.getElementsByClassName("info");
-      var y = document.getElementsByClassName("form-control");
-      var z = document.getElementById("info-btn");
-      var v = document.getElementById("image-upload");
-
-      for (var i=0;i<x.length;i+=1){
-        x[i].style.display = 'none';
-      }
-      for (var i=0;i<y.length;i+=1){
-        y[i].style.display = 'inline';
-      }
-      z.style.display = 'inline';
-      v.style.display = 'inline';
-      
+      this.edit_mode = true;   
     },
     save_changes(){
-      var x = document.getElementsByClassName("info");
-      var y = document.getElementsByClassName("form-control");
-      var z = document.getElementById("info-btn");
-      var v = document.getElementById("image-upload");
-
-      for (var i=0;i<x.length;i+=1){
-        x[i].style.display = 'inline';
-      }
-        for (var i=0;i<y.length;i+=1){
-        y[i].style.display = 'none';
-      }
-       z.style.display = 'none';
-       v.style.display = 'none';
+      this.edit_mode = false;
+    },
+    close(){
+      this.edit_mode = false;
     }
   },
   mounted() {
@@ -142,20 +144,75 @@ export default {
 };
 </script>
 
-<style lang="scss" scoped>
-#image-upload{
-  display: none;
+<style lang="scss">
+*, :after, :before {
+  background-repeat: repeat;
 }
-#info-btn{
+.col-md{
+  max-width: 650px;
+}
+.info{
+  padding-left: 13px;
+  text-align: left;
+  line-height: -2px;
+  margin: 0;
+}
+.header-title{
+  font-size: 20px;
+  margin: 0;
+}
+.inline-row{
+  display: flex;
+  height: 38px;
+  flex-direction: row;
+  align-items: center;
+  justify-content: start;
+}
+.general-header{
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 20px;
+  box-shadow: 0 10px 0  rgb(255, 255, 255),
+              0 14px 0 0 rgb(144, 144, 144);
+}
+.fa-question-circle{
+  margin-left: 5px;
+  margin-right: 5px;
+}
+.fa-question-circle::after{
+  opacity: 0;
+  width: auto;
+  height: 24px;
+  font-size: 14px;
+  margin-left: 10px;
+  padding: 5px;
+  background: rgb(245, 245, 245);
+  border-radius: 5px;
+  border: 1px solid rgb(82, 82, 82);
+  transition: all 2s ease-in-out;
+}
+.fa-question-circle:hover::after{
+  opacity: 1;
+  position: absolute;
+  content: 'Account number: 0x94Aae3fB6D4Eb2bC4DD46124A789f9273E50C962';
+  transform: translateY(-4px);
+}
+#save-btn{
+  margin-top: 15px;
   color: whitesmoke;
   margin-left: 20px;
-  display:none;
 }
 .form-control{
-  display:none;
-  width:400px;
-  margin-bottom: 5px;
-  border-color: rgb(247, 121, 121);
+  display: inline;
+  outline: none;
+  width:80%;
+}
+.form-control:focus{
+  border-color: none;
+  box-shadow: 0 0 1px 1px rgb(221, 221, 221),
+              0px 0px 10px 1px rgb(167, 216, 255);
+
 }
 #settings:hover{
   cursor:pointer;
@@ -170,17 +227,15 @@ hr{
   color: black;
 }
 #box {
-  border-style: solid;
-  border-color: black;
-  border-width: 1px;
+  display: flex;
+  flex-direction: column;
   padding: 15px;
   border-radius: 10px;
+  transition: all 2s ease-in-out;
 }#box-2 {
-  border-style: solid;
-  border-color: black;
-  border-width: 1px;
   padding: 15px;
   border-radius: 10px;
+  transition: all 2s ease-in-out;
 }
 .progress {
   margin-top: 25px;
@@ -198,46 +253,43 @@ hr{
   height: auto;
 }
 #eth-img {
-  height: 40px;
-  width: 40px;
-  display: inline;
-  transform: translate(10px, 0px);
-  margin-bottom: 15px;
+  height: 25px;
+  width: 25px;
 }
 #text-default {
-  font-family: Georgia, "Times New Roman", Times, serif;
+  font-family: var(--bs-font-sans-serif);
   margin-top: 10px;
-  font-style: italic;
   margin-bottom: 15px;
+  display: inline;
 }
 #text-default-2 {
-  font-family: Georgia, "Times New Roman", Times, serif;
+  font-family: var(--bs-font-sans-serif);
+  font-weight: 500;
   margin-top: 10px;
-  font-style: italic;
   margin-bottom: 15px;
-  font-size: 19px;
+  font-size: 16px;
   display: inline;
 }
 #text-default-3 {
-  font-family: Georgia, "Times New Roman", Times, serif;
+  font-family: var(--bs-font-sans-serif);
   margin-top: 15px;
-  font-style: italic;
   margin-bottom: 15px;
   display: inline;
-  font-size: 24px;
+  font-size: 16px;
 }
 #icon {
-  display: inline;
-  margin-right: 10px;
-  margin-top: 10px;
+  text-align: center;
+  color: rgb(144, 144, 144);
+  width:30px;
+  font-size: 20px;
 }
 #separator {
   margin-bottom: 15px;
 }
 #account {
-  font-size: 19px;
+  font-size: 12px;
   opacity: 0.7;
-  font-family: Georgia, "Times New Roman", Times, serif;
+  font-family: var(--bs-font-sans-serif);
   margin-left: 10px;
   transform: translate(-10px, 0px);
   margin-bottom: 15px;

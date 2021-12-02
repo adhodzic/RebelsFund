@@ -66,6 +66,8 @@ export default {
       donor_name: "",
       charity_name: "",
       charity_month_amount: "",
+      location: "",
+      email: ""
     };
   },
   computed: {
@@ -99,7 +101,7 @@ export default {
 	  console.log(image.path);
       if (this.isDrizzleInitialized) {
         if (this.charity_name != "" && this.charity_month_amount != "") {
-          await this.drizzleInstance.contracts.RebelsFund.methods.signCharity(this.utils.toHex(this.charity_name),parseFloat(this.charity_month_amount),image.path).send();
+          await this.drizzleInstance.contracts.RebelsFund.methods.signCharity(this.utils.toHex(this.charity_name),parseFloat(this.charity_month_amount),image.path, this.location, this.email).send();
           await this.$parent.getUserRole();
           this.$router.push({ name: "Home" });
         } else {

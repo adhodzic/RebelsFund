@@ -74,7 +74,7 @@ export default {
 }
 .card{
     border-radius: 15px;
-    box-shadow: 0 0 0 1px rgb(48, 48, 48);
+    box-shadow: 2px 5px 10px 10px rgb(185, 185, 185);
     overflow:hidden;
 }
 .card-body{
