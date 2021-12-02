@@ -60,13 +60,13 @@ contract RebelsFund {
     }
   }
 
-  function getUser() public view returns(User memory){
+  function getUser() public view returns(User memory newUser){
     if(user[msg.sender].exist){
       return user[msg.sender];
     }
   }
 
-  function getCharity() public view returns(Charity memory){
+  function getCharity() public view returns(Charity memory newCharity){
     if(charity[msg.sender].exist){
       return charity[msg.sender];
     }
@@ -81,13 +81,21 @@ contract RebelsFund {
     return charities;
   }
 
-  function setUserName(bytes32 name) public {
-    user[msg.sender].name = name;
-  }
-  function setCharityName(bytes32 name) public {
-    charity[msg.sender].name = name;
-  }
-  function setCharityMonthAmount(uint256 monthAmount) public {
-    charity[msg.sender].monthAmount = monthAmount;
+  function updateCharity(bytes32 name, uint256 monthAmount, string memory image, string memory location, string memory email) public {
+    if(name != 0){
+      charity[msg.sender].name = name;
+    }
+    if(monthAmount >= 0){
+      charity[msg.sender].monthAmount = monthAmount;
+    }
+    if(keccak256(abi.encodePacked((image))) != ""){
+      charity[msg.sender].image = image;
+    }
+    if(keccak256(abi.encodePacked((location))) != ""){
+      charity[msg.sender].location = location;
+    }
+    if(keccak256(abi.encodePacked((email))) != ""){
+      charity[msg.sender].email = email;
+    }
   }
 }

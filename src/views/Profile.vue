@@ -5,7 +5,7 @@
         <img
             class="info"
             id="profile-img"
-            src="https://logowik.com/content/uploads/images/753_wwf.jpg"
+            :src="image"
           />
       </div>
       <div class="row">
@@ -30,7 +30,7 @@
               <p v-if="!edit_mode" class="info">{{getName}}</p>
               <i v-if="!edit_mode" class="far fa-question-circle"></i>
               <!--If in edit mode show input-->
-              <input v-if="edit_mode" type="text" class="form-control" :value="getName">
+              <input v-if="edit_mode" type="text" class="form-control" v-model="name">
             </div>
             <div id="separator"></div>
             <div class="inline-row">
@@ -40,7 +40,7 @@
               <p class="info" style="width: 100px;">Address:</p>
               <p v-if="!edit_mode" class="info">{{getLocation}}</p>
               <!--If in edit mode show input-->
-              <input v-if="edit_mode" type="text" class="form-control" :value="getLocation">
+              <input v-if="edit_mode" type="text" class="form-control" v-model="location">
             </div>
             <div id="separator"></div>
             <div class="inline-row">
@@ -48,11 +48,11 @@
               <p class="info" style="width: 100px;">Email:</p>
               <p v-if="!edit_mode" class="info">{{getEmail}}</p>
               <!--If in edit mode show input-->
-              <input v-if="edit_mode" type="text" class="form-control" :value="getEmail">
+              <input v-if="edit_mode" type="text" class="form-control" v-model="email">
             </div>
             <div id="separator"></div>
             <div v-if="edit_mode">
-             <ImageUploader></ImageUploader>
+             <ImageUploader ref="pond"></ImageUploader>
             </div>
           </div>
         </div>
@@ -66,7 +66,7 @@
               <i id="icon" class="fas fa-coins"></i>
               <p class="info" style="width: 100px;">Ether:</p>
               <p v-if="!edit_mode" class="info">{{getCurrentUser.monthAmount}}</p>
-              <input v-if="edit_mode" type="text" class="form-control" :value="getCurrentUser.monthAmount">
+              <input v-if="edit_mode" v-model="target_amount" type="text" class="form-control">
               <img id="eth-img" src="@/assets/eth.png" />
             </div>
             <div id="separator"></div>
@@ -93,6 +93,7 @@
 
 <script>
 import store from "../store/store";
+import ipfs from "../services/ipfs";
 import { mapGetters } from "vuex";
 import Settings from "../components/Settings.vue";
 import ImageUploader from "../components/ImageUploader.vue"
@@ -100,10 +101,12 @@ export default {
   name: "Profile",
   data(){
     return{
-      location:' Av. du Mont-Blanc 1196 ,Gland,Switzerland',
-      email:'worldwildlifefund@gmail.com',
-      target_ammount:'20',
+      name: "",
+      location:"",
+      email:"",
+      target_amount: "",
       edit_mode:false,
+      image: "https://logowik.com/content/uploads/images/753_wwf.jpg"
     }
   },
   components:{
@@ -113,6 +116,7 @@ export default {
   computed: {
     ...mapGetters(["getRole","getCurrentUser"]),
     ...mapGetters("drizzle", ["drizzleInstance", "isDrizzleInitialized"]),
+    ...mapGetters("contracts", ["getContractData"]),
     utils() {
       return this.drizzleInstance.web3.utils;
     },
@@ -129,17 +133,59 @@ export default {
   },
   methods: {
     update_info(){
-      this.edit_mode = true;   
+      this.name = this.utils.toUtf8(this.getCurrentUser.name);
+      this.location = this.getCurrentUser.location;
+      this.email = this.getCurrentUser.email;
+      this.target_amount = this.getCurrentUser.monthAmount;
+      this.edit_mode = true;  
     },
-    save_changes(){
+    async save_changes(){
+      if(this.getRole == 1){
+        await this.updateCharity();
+      } 
       this.edit_mode = false;
     },
     close(){
       this.edit_mode = false;
+    },
+    async updateCharity(){
+      await this.$parent.checkState();
+      let image = await this.postImage();
+      console.log(image)
+      if(image == null){
+        image = {
+          path: this.getCurrentUser.image
+        }
+      }
+      console.log(this.target_amount)
+      if (this.isDrizzleInitialized) {
+        await this.drizzleInstance.contracts.RebelsFund.methods.updateCharity(this.utils.toHex(this.name), parseFloat(this.target_amount), image.path, this.location, this.email).send();
+      }
+      this.$parent.getUserRole();
+      this.load_image();
+    },
+    async postImage() {
+      const file = this.$refs.pond.getFiles();
+      if (!file) return null;
+      // Dodaje sliku na IPFS te se dobiva response u kojemu se nalazi CID
+      const ipfsResponse = await ipfs
+        .add(file.getFileEncodeDataURL())
+        .catch((err) => {
+          console.log("Error: ", err);
+          return;
+        });
+      return ipfsResponse;
+    },
+    async load_image(){
+      console.log(this.image)
+      if(this.getCurrentUser.image == "") return;
+      let img = await fetch(`http://127.0.0.1:8081/ipfs/${this.getCurrentUser.image}/`);
+      this.image = await img.text();
+      this.loaded = true; // Dohvati base64URL
     }
   },
   mounted() {
-    
+    this.load_image();
   },
 };
 </script>
@@ -166,7 +212,7 @@ export default {
   height: 38px;
   flex-direction: row;
   align-items: center;
-  justify-content: start;
+  justify-content: flex-start;
 }
 .general-header{
   display: flex;
