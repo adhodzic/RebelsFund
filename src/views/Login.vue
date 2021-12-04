@@ -10,9 +10,31 @@
             id="first-input"
             class="form-control form-control-lg"
             type="text"
-            placeholder="Donor Username"
+            placeholder="Donor username"
             aria-label=".form-control-lg"
           />
+          <input
+            v-model="email"
+            class="form-control form-control-lg"
+            type="text"
+            placeholder="Email"
+            aria-label=".form-control-lg"
+          />
+            <input
+            v-model="email"
+            class="form-control form-control-lg"
+            type="text"
+            placeholder="Date of birth"
+            aria-label=".form-control-lg"
+          />
+            <input
+            v-model="email"
+            class="form-control form-control-lg"
+            type="text"
+            placeholder="Country"
+            aria-label=".form-control-lg"
+          />
+          <ImageUploader ref="image"></ImageUploader>
         </div>
         <div class="col-md">
           <h1>Sign in as Charity</h1>
@@ -25,6 +47,14 @@
             placeholder="Organization name"
             aria-label=".form-control-lg"
           />
+             <input
+            v-model="charity_name"
+            id="first-input"
+            class="form-control form-control-lg"
+            type="text"
+            placeholder="Organization address"
+            aria-label=".form-control-lg"
+          />
           <input
             v-model="charity_month_amount"
             class="form-control form-control-lg"
@@ -33,6 +63,12 @@
             aria-label=".form-control-lg"
           />
           <ImageUploader ref="image"></ImageUploader>
+          <input
+            class="form-control form-control-lg"
+            type="text"
+            placeholder="Link to Youtube video"
+            aria-label=".form-control-lg"
+          />
         </div>
       </div>
 
@@ -48,6 +84,9 @@
           </button>
         </div>
       </div>
+      <div data-app>
+      <Sheet class="sheet"></Sheet>
+      </div>
     </div>
   </div>
 </template>
@@ -57,9 +96,11 @@ import ipfs from "../services/ipfs";
 import { mapGetters } from "vuex";
 import store from "../store/store";
 import ImageUploader from "../components/ImageUploader.vue";
+import Sheet from "../components/Sheet.vue"
 export default {
   components: {
     ImageUploader,
+    Sheet
   },
   data() {
     return {
@@ -140,6 +181,9 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.sheet{
+  margin-bottom: 20px;
+}
 #expand {
   border-style: solid;
   border-color: gainsboro;
@@ -168,7 +212,7 @@ h1 {
   margin-bottom: 10px;
 }
 #btn-login {
-  border-top: rgb(218, 121, 247);
+  border-top: rgb(247, 121, 121);
   border-style: solid;
   border-width: 2px;
   color: whitesmoke;
