@@ -68,6 +68,9 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.fas:hover{
+    cursor: pointer;
+}
 *, ::before, ::after {
     background-repeat: repeat;
     box-sizing: inherit;

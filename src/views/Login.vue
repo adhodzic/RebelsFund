@@ -20,20 +20,9 @@
             placeholder="Email"
             aria-label=".form-control-lg"
           />
-            <input
-            v-model="email"
-            class="form-control form-control-lg"
-            type="text"
-            placeholder="Date of birth"
-            aria-label=".form-control-lg"
-          />
-            <input
-            v-model="email"
-            class="form-control form-control-lg"
-            type="text"
-            placeholder="Country"
-            aria-label=".form-control-lg"
-          />
+           <date-picker placeholder="Date of birth" class="form-control form-control-lg" v-model="time1" valueType="format"></date-picker>
+           <country-select id="select" class="form-control" v-model="country" :country="country" topCountry="US" />
+           <region-select id="select" class="form-control" v-model="region" :country="country" :region="region" />
           <ImageUploader ref="image"></ImageUploader>
         </div>
         <div class="col-md">
@@ -48,8 +37,6 @@
             aria-label=".form-control-lg"
           />
              <input
-            v-model="charity_name"
-            id="first-input"
             class="form-control form-control-lg"
             type="text"
             placeholder="Organization address"
@@ -97,10 +84,13 @@ import { mapGetters } from "vuex";
 import store from "../store/store";
 import ImageUploader from "../components/ImageUploader.vue";
 import Sheet from "../components/Sheet.vue"
+import DatePicker from 'vue2-datepicker';
+import 'vue2-datepicker/index.css';
 export default {
   components: {
     ImageUploader,
-    Sheet
+    Sheet,
+    DatePicker
   },
   data() {
     return {
@@ -108,7 +98,12 @@ export default {
       charity_name: "",
       charity_month_amount: "",
       location: "",
-      email: ""
+      email: "",
+      country: '',
+      region: '',
+      time1: null,
+      time2: null,
+      time3: null,
     };
   },
   computed: {
@@ -181,6 +176,11 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+#select{
+  color: rgb(115, 115, 115);
+  font-size: 19px;
+  height: 50px;
+}
 .sheet{
   margin-bottom: 20px;
 }
