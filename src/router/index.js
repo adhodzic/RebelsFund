@@ -16,6 +16,12 @@ const routes = [
     path:'/profile',
     name:'Profile',
     component: () => import(/* webpackChunkName: "tv-shows" */ '../views/Profile.vue')
+  },
+  {
+    path: '/:id',
+    props: true,
+    name: 'Fund-Details',
+    component: () => import(/* webpackChunkName: "post-detail" */ '../views/FundDetails.vue')
   }
 ]
 

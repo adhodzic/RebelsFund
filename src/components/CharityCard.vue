@@ -12,7 +12,7 @@
      <input v-model="donate_ammount" class="form-control input-bar" placeholder="Amount to donate (ETH)">
      <div class="footer">
         <a @click="donate()" id="donate-button" href="#" class="btn btn-dark" style="visibility: visible;">Donate</a>
-        <i class="fas fa-info-circle"></i>
+        <i @click="goDetails()" class="fas fa-info-circle"></i>
      </div>
   </div>
 </div>
@@ -42,6 +42,11 @@ export default {
         }
     },
     methods:{
+        goDetails(){
+            if (this.$route.name !== "Fund-details"){
+            this.$router.push({path: `/${this.card_info.adr}`})
+            }
+        },
         donate(){
             this.$parent.donate(this.card_info.adr, this.donate_ammount)
             this.donate_ammount = ""
@@ -68,6 +73,9 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.fas:hover{
+    cursor: pointer;
+}
 *, ::before, ::after {
     background-repeat: repeat;
     box-sizing: inherit;

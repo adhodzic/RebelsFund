@@ -10,6 +10,13 @@
         allowProcess= false
         accepted-file-types="image/jpeg, image/png"
         v-bind:files="myFiles"
+        imagePreviewMaxHeight="200"
+        imageCropAspectRatio="1:1"
+        allowImageResize="true"
+        imageResizeTargetWidth="200"
+        imageResizeTargetHeight="200"
+        imageResizeMode='cover'
+        imageResizeUpscale="false"
     />
     <!-- <div class="buttonContainer">
 		<button class="btn btn-dark" id="btn-img" @click="postImage">Upload</button>
@@ -36,13 +43,17 @@
   import FilePondPluginImagePreview from 'filepond-plugin-image-preview'
   import FilePondPluginFileEncode from "filepond-plugin-file-encode";
   import FilePondPluginImageCrop from 'filepond-plugin-image-crop';
+  import FilePondPluginImageValidateSize from 'filepond-plugin-image-validate-size';
+  import FilePondPluginImageResize from 'filepond-plugin-image-resize';
 
   // Create component
   const FilePond = vueFilePond(
           FilePondPluginFileValidateType,
           FilePondPluginImagePreview,
           FilePondPluginFileEncode,
-          FilePondPluginImageCrop
+          FilePondPluginImageCrop,
+          FilePondPluginImageValidateSize,
+          FilePondPluginImageResize 
   )
   export default {
     name: 'FilePondDemo',

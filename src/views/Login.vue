@@ -10,9 +10,38 @@
             id="first-input"
             class="form-control form-control-lg"
             type="text"
-            placeholder="Donor Username"
+            placeholder="Username"
             aria-label=".form-control-lg"
           />
+          <input
+            v-model="email"
+            class="form-control form-control-lg"
+            type="text"
+            placeholder="Email"
+            aria-label=".form-control-lg"
+          />
+          <date-picker
+            id="date"
+            class="form-control"
+            placeholder="Date of birth"
+            v-model="time1"
+            valueType="format"
+          ></date-picker>
+          <country-select
+            id="select"
+            class="form-control"
+            v-model="country"
+            :country="country"
+            topCountry="US"
+          />
+          <region-select
+            id="select"
+            class="form-control"
+            v-model="region"
+            :country="country"
+            :region="region"
+          />
+          <ImageUploader ref="image"></ImageUploader>
         </div>
         <div class="col-md">
           <h1>Sign in as Charity</h1>
@@ -26,10 +55,30 @@
             aria-label=".form-control-lg"
           />
           <input
+            class="form-control form-control-lg"
+            type="text"
+            placeholder="HQ address"
+            aria-label=".form-control-lg"
+          />
+          <input
             v-model="charity_month_amount"
             class="form-control form-control-lg"
             type="text"
-            placeholder="ETH target donnation ammount"
+            placeholder="Donnation goal (ETH)"
+            aria-label=".form-control-lg"
+          />
+          <select
+            class="form-select form-select-lg mb-3"
+            aria-label=".form-select-lg example"
+          >
+            <option v-for="cat in categories" v-bind:key="cat">
+              {{ cat }}
+            </option>
+          </select>
+          <input
+            class="form-control form-control-lg"
+            type="text"
+            placeholder="Link to Youtube video"
             aria-label=".form-control-lg"
           />
           <ImageUploader ref="image"></ImageUploader>
@@ -37,16 +86,19 @@
       </div>
 
       <div class="row">
-        <div  style="margin-bottom:50px;"  class="col-md">
+        <div style="margin-bottom: 50px" class="col-md">
           <button id="btn-login" @click="addAsDonor" class="btn btn-dark">
             Donor Sign in
           </button>
         </div>
-        <div style="margin-bottom:50px;" class="col-md">
+        <div style="margin-bottom: 50px" class="col-md">
           <button id="btn-login" @click="addAsCharity" class="btn btn-dark">
             Charity Sign in
           </button>
         </div>
+      </div>
+      <div data-app>
+        <Sheet class="sheet"></Sheet>
       </div>
     </div>
   </div>
@@ -57,9 +109,14 @@ import ipfs from "../services/ipfs";
 import { mapGetters } from "vuex";
 import store from "../store/store";
 import ImageUploader from "../components/ImageUploader.vue";
+import Sheet from "../components/Sheet.vue";
+import DatePicker from "vue2-datepicker";
+import "vue2-datepicker/index.css";
 export default {
   components: {
     ImageUploader,
+    Sheet,
+    DatePicker,
   },
   data() {
     return {
@@ -67,7 +124,22 @@ export default {
       charity_name: "",
       charity_month_amount: "",
       location: "",
-      email: ""
+      email: "",
+      country: "",
+      region: "",
+      time1: null,
+      time2: null,
+      time3: null,
+      selected: "",
+      categories: {
+        select1: "Education",
+        select2: "Animals",
+        select3: "Environment",
+        select4: "Children & Youth",
+        select5: "Disasters & Conflict",
+        select6: "Human Rights",
+        select7: "Healthcare",
+      },
     };
   },
   computed: {
@@ -92,16 +164,24 @@ export default {
     //Method which is called on non existing user to register it self as a charity role
     async addAsCharity() {
       let image = await this.postImage();
-	  console.log(image)
-      if(image == null){
-		  image = {
-			  path: ""
-		  }
-	  }
-	  console.log(image.path);
+      console.log(image);
+      if (image == null) {
+        image = {
+          path: "",
+        };
+      }
+      console.log(image.path);
       if (this.isDrizzleInitialized) {
         if (this.charity_name != "" && this.charity_month_amount != "") {
-          await this.drizzleInstance.contracts.RebelsFund.methods.signCharity(this.utils.toHex(this.charity_name),parseFloat(this.charity_month_amount),image.path, this.location, this.email).send();
+          await this.drizzleInstance.contracts.RebelsFund.methods
+            .signCharity(
+              this.utils.toHex(this.charity_name),
+              parseFloat(this.charity_month_amount),
+              image.path,
+              this.location,
+              this.email
+            )
+            .send();
           await this.$parent.getUserRole();
           this.$router.push({ name: "Home" });
         } else {
@@ -140,6 +220,20 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.form-select {
+  color: gray;
+}
+#date {
+  width: 100%;
+}
+#select {
+  color: rgb(115, 115, 115);
+  font-size: 19px;
+  height: 50px;
+}
+.sheet {
+  margin-bottom: 20px;
+}
 #expand {
   border-style: solid;
   border-color: gainsboro;
@@ -168,7 +262,7 @@ h1 {
   margin-bottom: 10px;
 }
 #btn-login {
-  border-top: rgb(218, 121, 247);
+  border-top: rgb(247, 121, 121);
   border-style: solid;
   border-width: 2px;
   color: whitesmoke;

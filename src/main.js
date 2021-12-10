@@ -11,6 +11,9 @@ import vuetify from './plugins/vuetify'
 import VuePageTransition from 'vue-page-transition'
 import VueRouter from 'vue-router'
 import Vuetify from 'vuetify'
+import vueCountryRegionSelect from 'vue-country-region-select'
+
+Vue.use(vueCountryRegionSelect)
 
 Vue.use(VueRouter)
 
