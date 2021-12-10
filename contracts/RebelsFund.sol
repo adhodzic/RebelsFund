@@ -15,6 +15,8 @@ contract RebelsFund {
   }
   struct User{
     bytes32 name;
+    string location;
+    string email;
     bool exist;
   }
   mapping (address => User) public user;
@@ -41,9 +43,9 @@ contract RebelsFund {
     }
   }
 
-  function signUser(bytes32 name) public {
+  function signUser(bytes32 name, string memory location, string memory email) public {
     if(!user[msg.sender].exist){
-      user[msg.sender] = User(name,true);
+      user[msg.sender] = User(name,location,email,true);
       emit SignatureAdded("New donor added!", name);
     }else{
       emit SignatureAdded("You are already donor", name);
@@ -96,6 +98,18 @@ contract RebelsFund {
     }
     if(keccak256(abi.encodePacked((email))) != ""){
       charity[msg.sender].email = email;
+    }
+  }
+
+  function updateDonor(bytes32 name, string memory location, string memory email) public {
+    if(name != 0){
+      user[msg.sender].name = name;
+    }
+    if(keccak256(abi.encodePacked((location))) != ""){
+      user[msg.sender].location = location;
+    }
+    if(keccak256(abi.encodePacked((email))) != ""){
+      user[msg.sender].email = email;
     }
   }
 }

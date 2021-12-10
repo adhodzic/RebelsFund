@@ -1,25 +1,28 @@
 <template>
   <div class="profile">
     <div class="container">
-      <div style="justify-content: center;" class="row">
-        <img
-            class="info"
-            id="profile-img"
-            :src="image"
-          />
+      <div class="row">
+        <div style="align-text: center; min-width: 650px;" class="col-md">
+          <img
+              id="profile-img"
+              :src="image"
+            />
+        </div>
+        <div v-if="getRole == 1" class="col-md"></div>
       </div>
       <div class="row">
-        <div style="padding-bottom: 0px; padding-left: 30px" class="col-md">
-        <i id="icon" v-if="!edit_mode" @click="update_info" class="fas fa-cog"></i>
-        <i id="icon" v-if="edit_mode" @click="close" class="far fa-window-close"></i>
-        <i id="icon" v-if="edit_mode" @click="save_changes" class="far fa-save"></i>
-        </div>
+        <!-- <div style="padding-bottom: 0px;" class="col-md">
+          <i id="icon" v-if="!edit_mode" @click="update_info" class="fas fa-cog"></i>
+          <i id="icon" v-if="edit_mode" @click="close" class="far fa-window-close"></i>
+          <i id="icon" v-if="edit_mode" @click="save_changes" class="far fa-save"></i>
+        </div> -->
       </div>
       <div class="row">
         <div class="col-md">
           <div class="shadow-lg p-3 mb-5 bg-body rounded" id="box">
             <div class="general-header">
               <p class="header-title">General information</p>
+              <i id="icon" v-if="!edit_mode" @click="update_info" class="fas fa-cog"></i>
             </div>
             <div id="separator"></div>
             <div class="inline-row">
@@ -54,6 +57,11 @@
             <div v-if="edit_mode">
              <ImageUploader ref="pond"></ImageUploader>
             </div>
+            <div id="separator"></div>
+            <div class="inline-row">
+              <button type="button" @click="save_changes" class="btn save-btn m-2">Save</button>
+              <button type="button" @click="close" class="btn cancel-btn m-2">Cancel</button>
+            </div>
           </div>
         </div>
         <div v-if="getRole == 1" class="col-md">
@@ -63,16 +71,17 @@
             </div>
             <div id="separator"></div>
             <div class="inline-row">
-              <i id="icon" class="fas fa-coins"></i>
-              <p class="info" style="width: 100px;">Ether:</p>
+              <i id="icon" class="fas fa-bullseye"></i>
+              <p class="info" style="width: 100px;">Goal:</p>
               <p v-if="!edit_mode" class="info">{{getCurrentUser.monthAmount}}</p>
               <input v-if="edit_mode" v-model="target_amount" type="text" class="form-control">
               <img id="eth-img" src="@/assets/eth.png" />
             </div>
             <div id="separator"></div>
               <div class="inline-row">
-              <p class="info">Fundraised: 4 ETH</p>
-            <img id="eth-img" src="@/assets/eth.png" />
+                <i id="icon" class="fab fa-ethereum"></i>
+                <p class="info" style="width: 100px;">Donated:</p>
+                <p class="info">{{getCurrentUser.recievedAmount}}</p>
             </div>
             <div class="progress">
               <div
@@ -92,7 +101,6 @@
 </template>
 
 <script>
-import store from "../store/store";
 import ipfs from "../services/ipfs";
 import { mapGetters } from "vuex";
 import Settings from "../components/Settings.vue";
@@ -142,7 +150,9 @@ export default {
     async save_changes(){
       if(this.getRole == 1){
         await this.updateCharity();
-      } 
+      }else{
+        await this.updateDonor();
+      }
       this.edit_mode = false;
     },
     close(){
@@ -151,15 +161,17 @@ export default {
     async updateCharity(){
       await this.$parent.checkState();
       let image = await this.postImage();
-      console.log(image)
       if(image == null){
         image = {
           path: this.getCurrentUser.image
         }
       }
-      console.log(this.target_amount)
       if (this.isDrizzleInitialized) {
-        await this.drizzleInstance.contracts.RebelsFund.methods.updateCharity(this.utils.toHex(this.name), parseFloat(this.target_amount), image.path, this.location, this.email).send();
+        if(this.getRole == 1){
+          await this.drizzleInstance.contracts.RebelsFund.methods.updateCharity(this.utils.toHex(this.name), parseFloat(this.target_amount), image.path, this.location, this.email).send();
+        }else if(this.getRole == 2){
+          await this.drizzleInstance.contracts.RebelsFund.methods.updateDonor(this.utils.toHex(this.name), this.location, this.email).send();
+        }
       }
       this.$parent.getUserRole();
       this.load_image();
@@ -178,7 +190,7 @@ export default {
     },
     async load_image(){
       console.log(this.image)
-      if(this.getCurrentUser.image == "") return;
+      if(this.getCurrentUser.image == "" || this.getCurrentUser.image == undefined) return;
       let img = await fetch(`http://127.0.0.1:8081/ipfs/${this.getCurrentUser.image}/`);
       this.image = await img.text();
       this.loaded = true; // Dohvati base64URL
@@ -186,6 +198,7 @@ export default {
   },
   mounted() {
     this.load_image();
+    console.log(this.getCurrentUser)
   },
 };
 </script>
@@ -194,8 +207,27 @@ export default {
 *, :after, :before {
   background-repeat: repeat;
 }
+.save-btn{
+  background: rgb(193, 255, 169);
+  width: 50%;
+  color: rgb(0, 0, 0);
+}
+.save-btn:hover{
+  background: rgb(131, 202, 103);
+}
+.cancel-btn{
+  background: rgb(255, 186, 169);
+  width: 50%;
+  color: rgb(0, 0, 0);
+}
+.cancel-btn:hover{
+  background: rgb(207, 136, 119);
+}
 .col-md{
   max-width: 650px;
+}
+.row{
+  justify-content: center;
 }
 .info{
   padding-left: 13px;
@@ -294,9 +326,9 @@ hr{
 #profile-img {
   height: 300px;
   width: 400px;
-  border-radius: 4px;
-  max-width: 100%;
-  height: auto;
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
 }
 #eth-img {
   height: 25px;

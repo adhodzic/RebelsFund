@@ -120,7 +120,7 @@ export default {
             name: charity["name"],
             adr: charity["adr"],
             monthAmount: charity["monthAmount"],
-            recievedAmounth: charity["recievedAmount"],
+            recievedAmount: charity["recievedAmount"],
             location: charity["location"],
             email: charity["email"],
             image: charity["image"]
