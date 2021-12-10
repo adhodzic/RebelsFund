@@ -17,6 +17,7 @@ contract RebelsFund {
     bytes32 name;
     string location;
     string email;
+    string image;
     bool exist;
   }
   mapping (address => User) public user;
@@ -43,9 +44,9 @@ contract RebelsFund {
     }
   }
 
-  function signUser(bytes32 name, string memory location, string memory email) public {
+  function signUser(bytes32 name, string memory location, string memory email, string memory image) public {
     if(!user[msg.sender].exist){
-      user[msg.sender] = User(name,location,email,true);
+      user[msg.sender] = User(name,location,email, image,true);
       emit SignatureAdded("New donor added!", name);
     }else{
       emit SignatureAdded("You are already donor", name);
@@ -101,7 +102,7 @@ contract RebelsFund {
     }
   }
 
-  function updateDonor(bytes32 name, string memory location, string memory email) public {
+  function updateDonor(bytes32 name, string memory location, string memory email, string memory image) public {
     if(name != 0){
       user[msg.sender].name = name;
     }
@@ -110,6 +111,9 @@ contract RebelsFund {
     }
     if(keccak256(abi.encodePacked((email))) != ""){
       user[msg.sender].email = email;
+    }
+    if(keccak256(abi.encodePacked((image))) != ""){
+      user[msg.sender].image = image;
     }
   }
 }

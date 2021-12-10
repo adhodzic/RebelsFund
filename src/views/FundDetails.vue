@@ -176,8 +176,8 @@ export default {
       return ipfsResponse;
     },
     async load_image(){
-      console.log(this.image)
-      if(this.getCurrentUser.image == "") return;
+      console.log(this.card_info)
+      if(this.card_info == undefined || this.card_info.image == "" || this.card_info.image == undefined || this.card_info.image == null) return;
       let img = await fetch(`http://127.0.0.1:8081/ipfs/${this.getCurrentUser.image}/`);
       this.image = await img.text();
       this.loaded = true; // Dohvati base64URL

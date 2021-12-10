@@ -1,91 +1,109 @@
 <template>
   <div class="login">
-    <div class="container">
-      <div class="row">
-        <div class="col-md">
-          <h1>Sign in as Donor</h1>
-          <img id="donor-img" src="@/assets/eth.png" />
-          <input
-            v-model="donor_name"
-            id="first-input"
-            class="form-control form-control-lg"
-            type="text"
-            placeholder="Username"
-            aria-label=".form-control-lg"
-          />
-          <input
-            v-model="email"
-            class="form-control form-control-lg"
-            type="text"
-            placeholder="Email"
-            aria-label=".form-control-lg"
-          />
-          <date-picker
-            id="date"
-            class="form-control"
-            placeholder="Date of birth"
-            v-model="time1"
-            valueType="format"
-          ></date-picker>
-          <country-select
-            id="select"
-            class="form-control"
-            v-model="country"
-            :country="country"
-            topCountry="US"
-          />
-          <region-select
-            id="select"
-            class="form-control"
-            v-model="region"
-            :country="country"
-            :region="region"
-          />
-          <ImageUploader ref="image"></ImageUploader>
+    <div style="margin-top: 50px;" class="container">
+      <div style="margin-bottom: 20px;" class="row">
+        <div class="col-md title">
+          <h1><b>Sign Up</b></h1>
         </div>
-        <div class="col-md">
-          <h1>Sign in as Charity</h1>
-          <img id="donor-img-2" src="@/assets/charity.png" />
-          <input
+      </div>
+      <div style="margin-bottom: 20px;" class="row">
+        <div class="col-md form" :class="[type == 'donor' ? 'donor' : '']">
+          <div :class="[type == 'donor' ? 'invisible' : 'visible']">
+            <input
+              v-model="donor_name"
+              id="first-input"
+              class="form-control form-control-md"
+              type="text"
+              placeholder="Username"
+              aria-label=".form-control-md"
+            />
+            <input
+              v-model="email"
+              class="form-control form-control-md"
+              type="text"
+              placeholder="Email"
+              aria-label=".form-control-md"
+            />
+            <date-picker
+              id="date"
+              class=""
+              placeholder="Date of birth"
+              v-model="time1"
+              valueType="format"
+            ></date-picker>
+            <country-select
+              id="select"
+              class="form-control"
+              v-model="country"
+              :country="country"
+              topCountry="US"
+            />
+            <region-select
+              id="select"
+              class="form-control"
+              v-model="region"
+              :country="country"
+              :region="region"
+            />
+            <button @click="addAsDonor" class="btn success">Save</button>
+          </div>
+          <div :class="[type == 'donor' ? 'visible' : 'invisible']">
+            <input
             v-model="charity_name"
             id="first-input"
-            class="form-control form-control-lg"
+            class="form-control form-control-md"
             type="text"
             placeholder="Organization name"
-            aria-label=".form-control-lg"
+            aria-label=".form-control-md"
           />
           <input
-            class="form-control form-control-lg"
+            class="form-control form-control-md"
             type="text"
             placeholder="HQ address"
-            aria-label=".form-control-lg"
+            aria-label=".form-control-md"
           />
           <input
             v-model="charity_month_amount"
-            class="form-control form-control-lg"
+            class="form-control form-control-md"
             type="text"
             placeholder="Donnation goal (ETH)"
-            aria-label=".form-control-lg"
+            aria-label=".form-control-md"
           />
           <select
             class="form-select form-select-lg mb-3"
-            aria-label=".form-select-lg example"
+            aria-label=".form-select-md example"
           >
             <option v-for="cat in categories" v-bind:key="cat">
               {{ cat }}
             </option>
           </select>
           <input
-            class="form-control form-control-lg"
+            class="form-control form-control-md"
             type="text"
             placeholder="Link to Youtube video"
-            aria-label=".form-control-lg"
+            aria-label=".form-control-md"
           />
-          <ImageUploader ref="image"></ImageUploader>
+          <button @click="addAsCharity" class="btn success">Save</button>
+          </div>
+        </div>
+        <div class="col-md header" :class="[type == 'donor' ? 'donor' : '']">
+          <div :class="[type == 'donor' ? 'visible' : 'invisible']">
+            <h1>Charity</h1>
+            <h6>or</h6>
+            <button id="donor" @click="switchToCharity" class="btn btn-dark">Sign up as donor</button>
+          </div>
+          <div :class="[type == 'donor' ? 'invisible' : 'visible']">
+            <h1>Donor</h1>
+            <h6>or</h6>
+            <button id="donor" @click="switchToDonor" class="btn btn-dark">Sign up as charity</button>
+          </div>
         </div>
       </div>
-
       <div class="row">
+        <ImageUploader ref="image"></ImageUploader>
+      </div>
+
+      <!-- <div class="row">
         <div style="margin-bottom: 50px" class="col-md">
           <button id="btn-login" @click="addAsDonor" class="btn btn-dark">
             Donor Sign in
@@ -96,10 +114,10 @@
             Charity Sign in
           </button>
         </div>
-      </div>
-      <div data-app>
+      </div> -->
+      <!-- <div data-app>
         <Sheet class="sheet"></Sheet>
-      </div>
+      </div> -->
     </div>
   </div>
 </template>
@@ -120,6 +138,7 @@ export default {
   },
   data() {
     return {
+      type: "charity",
       donor_name: "",
       charity_name: "",
       charity_month_amount: "",
@@ -161,10 +180,15 @@ export default {
     }
   },
   methods: {
+    switchToDonor(){
+      this.type = "donor";
+    },
+    switchToCharity(){
+      this.type = "charity";
+    },
     //Method which is called on non existing user to register it self as a charity role
     async addAsCharity() {
       let image = await this.postImage();
-      console.log(image);
       if (image == null) {
         image = {
           path: "",
@@ -191,10 +215,16 @@ export default {
     },
     //Method which is called on non existing user to register it self as a donor role
     async addAsDonor() {
+      let image = await this.postImage();
+      if (image == null) {
+        image = {
+          path: "",
+        };
+      }
       if (this.isDrizzleInitialized) {
         if (this.donor_name != "") {
           await this.drizzleInstance.contracts.RebelsFund.methods
-            .signUser(this.utils.toHex(this.donor_name), this.location, this.email)
+            .signUser(this.utils.toHex(this.donor_name), this.location, this.email, image.path)
             .send();
           await this.$parent.getUserRole();
           this.$router.push({ name: "Home" });
@@ -220,16 +250,106 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.visible{
+  visibility: visible;
+  opacity: 1;
+  width: 100%;
+  transition: visibility 0s, opacity 1s ease;
+}
+.invisible{
+  visibility: hidden;
+  opacity: 0;
+  transition: visibility 0s, opacity 1s ease;
+}
+.container{
+  width: 1000px;
+}
+.btn-dark{
+  font-size: 14px;
+}
+.col-md{
+  margin: 0;
+  padding: 0;
+}
+.col-md.form{
+  height: 300px;
+}
+.col-md.header{
+  height: 300px;
+}
+.col-md.title{
+  text-align: center;
+  font-family: var(--bs-font-sans-serif);
+  color: rgb(47, 47, 47);
+}
+.btn.success{
+  width: 100%;
+  background: rgb(47, 47, 47);
+  color: rgb(255, 255, 255);
+}
+.form-select{
+  font-size: 14px;
+  padding: 6px 36px 6px 12px;
+  margin-bottom: 10px !important;
+}
+.form{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 10px 0 0 10px;
+  padding-left: 15px;
+  padding-right: 15px;
+  transition: 0.8s;
+}
+.form div.invisible{
+  position: absolute;
+}
+.header{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  background: rgb(247, 121, 121);
+  border-radius: 0 10px 10px 0;
+  box-shadow: 0 0 20px 1px rgb(179, 179, 179);
+  transition: 0.8s;
+}
+.header h1 {
+  height: fit-content;
+  color: rgb(47, 47, 47);
+}
+.header h4 {
+  color: rgb(47, 47, 47);
+}
+.header.donor{
+  margin-left: 0;
+  padding-left: 0;
+  padding-right: 15px;
+  border-radius: 10px 0 0 10px;
+  transform: translateX(-100%);
+}
+.header div{
+  position: absolute;
+  text-align: center;
+}
+.form.donor{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-left: 0;
+  padding-right: 0;
+  border-radius: 0 10px 10px 0;
+  transform: translateX(100%);
+}
 .form-select {
   color: gray;
 }
 #date {
   width: 100%;
+  margin-bottom: 10px;
 }
 #select {
-  color: rgb(115, 115, 115);
-  font-size: 19px;
-  height: 50px;
+  color: rgb(119, 119, 119);
 }
 .sheet {
   margin-bottom: 20px;
@@ -255,17 +375,21 @@ h1 {
   display: inline;
   transform: translate(10px, -10px);
 }
+input::placeholder{
+  font-size: 14px;
+}
 #first-input {
   margin-top: 20px;
 }
 .form-control {
   margin-bottom: 10px;
+  font-size: 14px;
 }
 #btn-login {
   border-top: rgb(247, 121, 121);
   border-style: solid;
   border-width: 2px;
   color: whitesmoke;
-  font-family: Georgia, "Times New Roman", Times, serif;
+  font-family: var(--bs-font-sans-serif);
 }
 </style>

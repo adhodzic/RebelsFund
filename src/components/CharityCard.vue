@@ -1,7 +1,7 @@
 <template>
 
 <div class="card" style="width: 18rem;">
-  <img :src="img" class="card-img-top" style="height:180px;" alt="...">
+  <img :src="img" class="card-img-top" alt="...">
   <div class="card-body">
     <h5 id="title-text" class="card-title">{{utils.hexToUtf8(card_info["name"])}}</h5>
     <p id="account-text" class="card-text">{{card_info["adr"]}}</p>
@@ -9,9 +9,9 @@
     <div class="progress">
         <div class="progress-bar progress-bar-striped bg-success" v-bind:style="{width: calculate_percentage + '%'}" role="progressbar" :aria-valuenow="calculate_percentage" aria-valuemin="0" aria-valuemax="100"></div>
     </div>
-     <input v-model="donate_ammount" class="form-control input-bar" placeholder="Amount to donate (ETH)">
+     <input v-if="getRole == 2 && !isFinished" v-model="donate_ammount" class="form-control input-bar" placeholder="Amount to donate (ETH)">
      <div class="footer">
-        <a @click="donate()" id="donate-button" href="#" class="btn btn-dark" style="visibility: visible;">Donate</a>
+        <a :class="[getRole == 2 && !isFinished ? 'visible' : '']" id="donate-button" @click="donate()" href="#" class="btn btn-dark">Donate</a>
         <i @click="goDetails()" class="fas fa-info-circle"></i>
      </div>
   </div>
@@ -25,6 +25,7 @@ export default {
     name: "CharityCard",
     props: ["card_info"],
     computed:{
+        ...mapGetters(["getRole","getCurrentUser"]),
         ...mapGetters("drizzle", ["drizzleInstance", "isDrizzleInitialized"]),
         utils() {
             return this.drizzleInstance.web3.utils
@@ -32,13 +33,16 @@ export default {
         calculate_percentage(){
             return ((this.card_info.recievedAmount/1e18)/this.card_info.monthAmount)*100
         },
+        isFinished(){
+            return (this.card_info.recievedAmount/1e18) >= this.card_info.monthAmount ? true : false
+        }
     },
     data(){
         return{
             donate_ammount: "",
             value: 20,
             loaded: false,
-            img: image
+            img: ""
         }
     },
     methods:{
@@ -51,14 +55,9 @@ export default {
             this.$parent.donate(this.card_info.adr, this.donate_ammount)
             this.donate_ammount = ""
         },
-        check_ammount(){
-            if(this.calculate_percentage >= 100){
-                document.getElementById("donate-button").style.visibility="hidden"   
-            }
-        },
         async load_image(){
             console.log(this.card_info.image)
-            if(this.card_info.image == "") return;
+            if(this.card_info == undefined || this.card_info.image == "" || this.card_info.image == undefined || this.card_info.image == null) return;
             let img = await fetch(`http://127.0.0.1:8081/ipfs/${this.card_info.image}/`);
 		    this.img = await img.text();
             this.loaded = true; // Dohvati base64URL
@@ -67,7 +66,6 @@ export default {
     mounted(){
     this.load_image();
     console.log("Card Info: ",this.card_info)
-    this.check_ammount()
   }
 }
 </script>
@@ -80,10 +78,23 @@ export default {
     background-repeat: repeat;
     box-sizing: inherit;
 }
+.visible{
+    opacity: 1 !important;
+}
+.btn{
+    opacity: 0;
+}
 .card{
     border-radius: 15px;
-    box-shadow: 2px 5px 10px 10px rgb(185, 185, 185);
+    box-shadow: 2px 5px 20px 5px rgb(230, 230, 230);
     overflow:hidden;
+}
+.card-img-top{
+    display: block;
+    width: auto;
+    height: 200px;
+    margin-left: auto;
+    margin-right: auto;
 }
 .card-body{
     background-color: rgb(241, 241, 241);   
@@ -94,8 +105,8 @@ export default {
 .footer{
     display: flex;
     align-items: center;
+    padding-top: 10px;
     justify-content: space-between;
-
 }
 #account-text{
     font-size: 12px;
@@ -119,6 +130,9 @@ export default {
     margin-top: 10px;
     border-style: solid;
     border-color:rgb(247, 121, 121);
+}
+input::-webkit-input-placeholder{
+    font-size: 14px;
 }
 #donor-img{
     height: 40px;

@@ -3,7 +3,7 @@
     <div class="container">
       <div class="row">
         <div style="align-text: center; min-width: 650px;" class="col-md">
-          <img
+          <img v-if="image"
               id="profile-img"
               :src="image"
             />
@@ -19,10 +19,10 @@
       </div>
       <div class="row">
         <div class="col-md">
-          <div class="shadow-lg p-3 mb-5 bg-body rounded" id="box">
+          <div class="shadow-lg p-3 mb-5 bg-body rounded" :class="[!edit_mode ? 'visible' : '']" id="box">
             <div class="general-header">
               <p class="header-title">General information</p>
-              <i id="icon" v-if="!edit_mode" @click="update_info" class="fas fa-cog"></i>
+              <i id="icon" class="fas fa-cog" :class="[edit_mode ? 'unvisible' : 'visible']" @click="update_info"></i>
             </div>
             <div id="separator"></div>
             <div class="inline-row">
@@ -33,7 +33,7 @@
               <p v-if="!edit_mode" class="info">{{getName}}</p>
               <i v-if="!edit_mode" class="far fa-question-circle"></i>
               <!--If in edit mode show input-->
-              <input v-if="edit_mode" type="text" class="form-control" v-model="name">
+              <input :class="[edit_mode ? 'visible' : 'unvisible']" type="text" class="form-control" v-model="name">
             </div>
             <div id="separator"></div>
             <div class="inline-row">
@@ -54,13 +54,15 @@
               <input v-if="edit_mode" type="text" class="form-control" v-model="email">
             </div>
             <div id="separator"></div>
-            <div v-if="edit_mode">
-             <ImageUploader ref="pond"></ImageUploader>
-            </div>
+            <ImageUploader :class=" [edit_mode ? 'visible' : 'unvisible']" ref="pond"></ImageUploader>
             <div id="separator"></div>
             <div class="inline-row">
-              <button type="button" @click="save_changes" class="btn save-btn m-2">Save</button>
-              <button type="button" @click="close" class="btn cancel-btn m-2">Cancel</button>
+              <transition name="fade">
+                <button v-if="edit_mode" type="button" @click="save_changes" class="btn save-btn m-2">Save</button>
+              </transition>
+              <transition name="fade">
+                <button v-if="edit_mode" type="button" @click="close" class="btn cancel-btn m-2">Cancel</button>
+              </transition>
             </div>
           </div>
         </div>
@@ -87,8 +89,8 @@
               <div
                 class="progress-bar-striped bg-success"
                 role="progressbar"
-                style="width: 25%"
-                aria-valuenow="25"
+                :style="{width: calculate_percentage + '%'}"
+                aria-valuenow="calculate_percentage"
                 aria-valuemin="0"
                 aria-valuemax="100"
               ></div>
@@ -114,7 +116,7 @@ export default {
       email:"",
       target_amount: "",
       edit_mode:false,
-      image: "https://logowik.com/content/uploads/images/753_wwf.jpg"
+      image: ""
     }
   },
   components:{
@@ -127,6 +129,9 @@ export default {
     ...mapGetters("contracts", ["getContractData"]),
     utils() {
       return this.drizzleInstance.web3.utils;
+    },
+    calculate_percentage(){
+      return ((this.getCurrentUser.recievedAmount/1e18)/this.getCurrentUser.monthAmount)*100
     },
     getName() {
       if(this.getCurrentUser.name)return this.utils.toUtf8(this.getCurrentUser.name)
@@ -190,15 +195,15 @@ export default {
     },
     async load_image(){
       console.log(this.image)
-      if(this.getCurrentUser.image == "" || this.getCurrentUser.image == undefined) return;
+      if(this.getCurrentUser.image == "" || this.getCurrentUser.image == undefined){ this.image = "https://logowik.com/content/uploads/images/753_wwf.jpg"; return;}
       let img = await fetch(`http://127.0.0.1:8081/ipfs/${this.getCurrentUser.image}/`);
       this.image = await img.text();
       this.loaded = true; // Dohvati base64URL
     }
   },
-  mounted() {
-    this.load_image();
-    console.log(this.getCurrentUser)
+  async mounted() {
+    await this.$parent.getUserRole();
+    await this.load_image();
   },
 };
 </script>
@@ -206,6 +211,26 @@ export default {
 <style lang="scss">
 *, :after, :before {
   background-repeat: repeat;
+}
+.visible{
+  transition: 0.5s;
+  opacity: 1;
+}
+.unvisible{
+  transition: 0.5s;
+  opacity: 0;
+}
+.fa-cog.unvisible{
+  transform: rotate(120deg);
+}
+.shadow-lg.visible{
+  max-height: 240px !important;
+}
+.fade-enter-active, .fade-leave-active {
+  transition: opacity .5s;
+}
+.fade-enter, .fade-leave-to /* .fade-leave-active below version 2.1.8 */ {
+  opacity: 0;
 }
 .save-btn{
   background: rgb(193, 255, 169);
@@ -286,6 +311,10 @@ export default {
   outline: none;
   width:80%;
 }
+.form-control.unvisible{
+  display: none;
+  transition: 0.5s;
+}
 .form-control:focus{
   border-color: none;
   box-shadow: 0 0 1px 1px rgb(221, 221, 221),
@@ -309,11 +338,16 @@ hr{
   flex-direction: column;
   padding: 15px;
   border-radius: 10px;
-  transition: all 2s ease-in-out;
+  transition:max-height 0.5s ease; // note that we're transitioning max-height, not height!
+  height:auto;
+  max-height:600px;
+  overflow: hidden;
 }#box-2 {
   padding: 15px;
   border-radius: 10px;
-  transition: all 2s ease-in-out;
+  transition:max-height 0.5s ease; // note that we're transitioning max-height, not height!
+  height:auto;
+  max-height:600px;
 }
 .progress {
   margin-top: 25px;
@@ -324,9 +358,9 @@ hr{
   width: 20px;
 }
 #profile-img {
-  height: 300px;
-  width: 400px;
   display: block;
+  width: auto;
+  height: 300px;
   margin-left: auto;
   margin-right: auto;
 }
