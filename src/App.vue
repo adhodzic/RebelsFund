@@ -1,6 +1,6 @@
 <template>
   <div v-if="isDrizzleInitialized" id="app">
-    <nav class="navbar navbar-dark bg-dark">
+    <nav id="topbar" class="navbar navbar-dark bg-dark">
       <div class="container-fluid">
         <div class="brand">
           <img

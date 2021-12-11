@@ -11,29 +11,27 @@
         <div v-if="getRole == 1" class="col-md"></div>
       </div>
       <div class="row">
-        <!-- <div style="padding-bottom: 0px;" class="col-md">
-          <i id="icon" v-if="!edit_mode" @click="update_info" class="fas fa-cog"></i>
-          <i id="icon" v-if="edit_mode" @click="close" class="far fa-window-close"></i>
-          <i id="icon" v-if="edit_mode" @click="save_changes" class="far fa-save"></i>
-        </div> -->
-      </div>
-      <div class="row">
         <div class="col-md">
-          <div class="shadow-lg p-3 mb-5 bg-body rounded" :class="[!edit_mode ? 'visible' : '']" id="box">
+          <div class="shadow-lg p-3 mb-5 bg-body" :class="[!edit_mode ? 'visible' : '']" id="box">
             <div class="general-header">
               <p class="header-title">General information</p>
-              <i id="icon" class="fas fa-cog" :class="[edit_mode ? 'unvisible' : 'visible']" @click="update_info"></i>
+              <div class="tools">
+                <i id="icon" class="fas fa-cog" :class="[edit_mode ? 'invisible' : 'visible']" @click="update_info"></i>
+                <i id="icon" class="fas fa-times" :class="[edit_mode ? 'visible' : 'invisible']" @click="close"></i>
+              </div>
             </div>
+
             <div id="separator"></div>
+
             <div class="inline-row">
               <div id="icon">
                 <i class="fas fa-user"></i>
               </div>
               <p class="info" style="width: 100px;">Name:</p>
-              <p v-if="!edit_mode" class="info">{{getName}}</p>
-              <i v-if="!edit_mode" class="far fa-question-circle"></i>
+              <p :class="[edit_mode ? 'invisible' : 'visible']" class="info">{{getName}}</p>
+              <i :class="[edit_mode ? 'invisible' : 'visible']" class="far fa-question-circle"></i>
               <!--If in edit mode show input-->
-              <input :class="[edit_mode ? 'visible' : 'unvisible']" type="text" class="form-control" v-model="name">
+              <input :class="[edit_mode ? 'visible' : 'invisible']" type="text" class="form-control" v-model="name">
             </div>
             <div id="separator"></div>
             <div class="inline-row">
@@ -41,31 +39,29 @@
                 <i class="fas fa-map-marker-alt"></i>
               </div>
               <p class="info" style="width: 100px;">Address:</p>
-              <p v-if="!edit_mode" class="info">{{getLocation}}</p>
+              <p :class="[edit_mode ? 'invisible' : 'visible']" class="info">{{getLocation}}</p>
               <!--If in edit mode show input-->
-              <input v-if="edit_mode" type="text" class="form-control" v-model="location">
+              <input :class="[edit_mode ? 'visible' : 'invisible']" type="text" class="form-control" v-model="location">
             </div>
             <div id="separator"></div>
             <div class="inline-row">
               <i id="icon" class="fas fa-envelope"></i>
               <p class="info" style="width: 100px;">Email:</p>
-              <p v-if="!edit_mode" class="info">{{getEmail}}</p>
+              <p :class="[edit_mode ? 'invisible' : 'visible']" class="info">{{getEmail}}</p>
               <!--If in edit mode show input-->
-              <input v-if="edit_mode" type="text" class="form-control" v-model="email">
+              <input :class="[edit_mode ? 'visible' : 'invisible']" type="text" class="form-control" v-model="email">
             </div>
             <div id="separator"></div>
-            <ImageUploader :class=" [edit_mode ? 'visible' : 'unvisible']" ref="pond"></ImageUploader>
+            <ImageUploader :class=" [edit_mode ? 'visible' : 'invisible']" ref="pond"></ImageUploader>
             <div id="separator"></div>
             <div class="inline-row">
-              <transition name="fade">
-                <button v-if="edit_mode" type="button" @click="save_changes" class="btn save-btn m-2">Save</button>
-              </transition>
-              <transition name="fade">
-                <button v-if="edit_mode" type="button" @click="close" class="btn cancel-btn m-2">Cancel</button>
-              </transition>
+                <button :class="[edit_mode ? 'visible' : 'invisible']" type="button" @click="save_changes" class="btn save-btn m-2">Save</button>
+                <button :class="[edit_mode ? 'visible' : 'invisible']" type="button" @click="close" class="btn cancel-btn m-2">Cancel</button>
             </div>
           </div>
         </div>
+
+
         <div v-if="getRole == 1" class="col-md">
           <div class="shadow-lg p-3 mb-5 bg-body rounded" id="box">
             <div class="general-header">
@@ -83,7 +79,8 @@
               <div class="inline-row">
                 <i id="icon" class="fab fa-ethereum"></i>
                 <p class="info" style="width: 100px;">Donated:</p>
-                <p class="info">{{getCurrentUser.recievedAmount}}</p>
+                <p class="info">{{getCurrentUser.recievedAmount/1e18}}</p>
+                <img id="eth-img" src="@/assets/eth.png" />
             </div>
             <div class="progress">
               <div
@@ -96,7 +93,7 @@
               ></div>
             </div>
           </div>
-        </div>
+        </div>   
       </div>
     </div>
   </div>
@@ -212,18 +209,39 @@ export default {
   background-repeat: repeat;
 }
 .visible{
-  transition: 0.5s;
   opacity: 1;
 }
-.unvisible{
-  transition: 0.5s;
+.invisible{
+  transition: 0.3s;
   opacity: 0;
 }
-.fa-cog.unvisible{
-  transform: rotate(120deg);
+.tools{
+  display: flex;
+  position: relative;
+  align-items: center;
+  justify-content: center;
+}
+.info.invisible{
+  visibility: hidden;
+  position: absolute;
+  transition: none;
+}
+.fa-question-circle.invisible{
+  visibility: hidden;
+  position: absolute;
+  transition: none;
+}
+.fa-times{
+  position: absolute;
+}
+.fa-times.invisible{
+  transform: rotate(-180deg);
+}
+.fa-cog.invisible{
+  transform: rotate(180deg);
 }
 .shadow-lg.visible{
-  max-height: 240px !important;
+  max-height: 260px !important;
 }
 .fade-enter-active, .fade-leave-active {
   transition: opacity .5s;
@@ -257,6 +275,7 @@ export default {
   padding-left: 13px;
   text-align: left;
   line-height: -2px;
+  min-width: 50px;
   margin: 0;
 }
 .header-title{
@@ -265,7 +284,7 @@ export default {
 }
 .inline-row{
   display: flex;
-  height: 38px;
+  min-height: 40px;
   flex-direction: row;
   align-items: center;
   justify-content: flex-start;
@@ -306,12 +325,15 @@ export default {
   margin-left: 20px;
 }
 .form-control{
-  display: inline;
+  justify-self: center;  
   outline: none;
-  width:80%;
+  max-width: 300px;
 }
-.form-control.unvisible{
+.form-control.invisible{
   display: none;
+  transition: 0.5s;
+}
+.form-control.visible{
   transition: 0.5s;
 }
 .form-control:focus{
@@ -336,7 +358,7 @@ hr{
   display: flex;
   flex-direction: column;
   padding: 15px;
-  border-radius: 10px;
+  border-radius: 15px;
   transition:max-height 0.5s ease; // note that we're transitioning max-height, not height!
   height:auto;
   max-height:600px;
