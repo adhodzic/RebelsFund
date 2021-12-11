@@ -79,7 +79,6 @@
             const ipfsResponse = await ipfs.add(file.getFileEncodeDataURL()).catch(err => {
                 console.log("Error: ",err);
             });
-            console.log(ipfsResponse)
         },
         getFiles(){
           return this.$refs.pond.getFiles()[0];

@@ -1,6 +1,6 @@
 <template>
   <div v-if="isDrizzleInitialized" id="app">
-    <nav id="topbar" class="navbar navbar-dark bg-dark">
+    <nav class="navbar navbar-dark bg-dark">
       <div class="container-fluid">
         <div class="brand">
           <img
@@ -16,24 +16,22 @@
           </router-link>
           <input
             id="nav-input"
-            v-if="$route.name == 'Home'"
+            v-if="$route.name != 'Login'"
             class="form-control search-input"
             type="search"
             placeholder="Search"
             aria-label="Search"
           />
         </div>
-        <div v-if="$route.name != 'Login'" class="profile">
-          <p
-            v-if="getCurrentUser.name != null && getCurrentUser != ''"
-            class="profile-name"
-          >
-            {{ utils.toUtf8(getCurrentUser.name) }}
-          </p>
-          <router-link to="/profile">
-            <i class="fas fa-user-circle"></i>
-          </router-link>
-        </div>
+        <router-link to="/profile">
+          <div v-if="$route.name != 'Login'" class="profile">
+              <p v-if="getCurrentUser.name != null && getCurrentUser != ''" class="profile-name">
+                {{ utils.toUtf8(getCurrentUser.name) }}
+              </p>
+              <i :class="[img == null ? 'visible' : 'invisible']" class="fas fa-user-circle"></i>
+              <img :class="[img != null ? 'visible' : 'invisible']" :src="img" class="profile-image" alt="">
+          </div>
+        </router-link>
       </div>
     </nav>
 
@@ -72,6 +70,7 @@ export default {
       name: "",
       amount: "",
       char: "",
+      img: null
     };
   },
   computed: {
@@ -86,6 +85,15 @@ export default {
     },
   },
   methods: {
+    async load_image(){
+      if(this.getCurrentUser == undefined || this.getCurrentUser.image == "" || this.getCurrentUser.image == undefined || this.getCurrentUser.image == null){
+        this.img = null;
+        return;
+      }
+        let img = await fetch(`http://127.0.0.1:8081/ipfs/${this.getCurrentUser.image}/`);
+		    this.img = await img.text();
+        this.loaded = true; // Dohvati base64URL
+    },
     //Method used to check if drizzle is initialized and if it's not it will wait and check every 500ms
     async checkState() {
       let state = this.isDrizzleInitialized;
@@ -104,12 +112,10 @@ export default {
         const role = await this.drizzleInstance.contracts.RebelsFund.methods
           .getRole()
           .call({ from: sender });
-        console.log(role);
         if (role == 2) {
           const user = await this.drizzleInstance.contracts.RebelsFund.methods
             .getUser()
             .call({ from: sender });
-          console.log(user);
           this.$store.dispatch("setCurrentUser", user);
         } else if (role == 1) {
           const charity =
@@ -128,9 +134,10 @@ export default {
           this.$store.dispatch("setCurrentUser", obj);
         }
         this.$store.dispatch("updateRole", role);
+        await this.load_image();
         if (role == 0 && this.$route.name != "Login") {
           this.$router.push("/login");
-        } else if (role > 0 && this.$route == "Login") {
+        } else if (role > 0 && this.$route.name == "Login") {
           this.$router.push("/");
         }
       }
@@ -143,7 +150,7 @@ export default {
       });
     },
   },
-  mounted() {
+  async mounted() {
     this.listenMMAccount();
     this.$drizzleEvents.$on("drizzle/contractEvent", (payload) => {
       //alert(payload.data.message + payload.data.name)
@@ -156,6 +163,7 @@ export default {
       method: "getAllCharity",
       methodArgs: [],
     });
+    await this.load_image();
   },
 };
 </script>
@@ -174,6 +182,28 @@ export default {
     left: 0;    
   }
   }
+
+.visible{
+  opacity: 1;
+  visibility: visible;
+  transition: 0.5s ease;
+}
+.invisible{
+  opacity: 0;
+  position: absolute;
+  visibility: hidden;
+}
+.navbar{
+  padding: 5px;
+  box-shadow: 0 0 0 4px rgb(247, 121, 121),
+              0 0 10px 4px rgb(100,100,100);
+  transition:0.5s;
+}
+.profile-image{
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+}
 .animation{
   margin-top: 50px;
 }
@@ -229,13 +259,17 @@ export default {
 .profile {
   display: flex;
   align-items: center;
-  justify-content: center;
+  justify-content: right;
+  min-width: 300px;
   column-gap: 10px;
+}
+.container-fluid a:link{
+  text-decoration: none;
 }
 .profile-name {
   color: white;
   text-align: center;
-  margin-bottom: 6px;
+  margin-bottom: 0;
   font-family: var(--bs-font-sans-serif);
   font-size: 20px;
 }
@@ -258,13 +292,9 @@ export default {
   font-size: 29px;
   margin-left: 15px;
 }
-#topbar {
-  border-bottom: rgb(247, 121, 121);
-  border-style: solid;
-}
 .fa-user-circle {
   color: whitesmoke;
-  font-size: 35px;
+  font-size: 40px;
 }
 @media (max-width: 768px) {
   @keyframes image {

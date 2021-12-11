@@ -102,22 +102,6 @@
       <div class="row">
         <ImageUploader ref="image"></ImageUploader>
       </div>
-
-      <!-- <div class="row">
-        <div style="margin-bottom: 50px" class="col-md">
-          <button id="btn-login" @click="addAsDonor" class="btn btn-dark">
-            Donor Sign in
-          </button>
-        </div>
-        <div style="margin-bottom: 50px" class="col-md">
-          <button id="btn-login" @click="addAsCharity" class="btn btn-dark">
-            Charity Sign in
-          </button>
-        </div>
-      </div> -->
-      <!-- <div data-app>
-        <Sheet class="sheet"></Sheet>
-      </div> -->
     </div>
   </div>
 </template>
@@ -194,7 +178,6 @@ export default {
           path: "",
         };
       }
-      console.log(image.path);
       if (this.isDrizzleInitialized) {
         if (this.charity_name != "" && this.charity_month_amount != "") {
           await this.drizzleInstance.contracts.RebelsFund.methods

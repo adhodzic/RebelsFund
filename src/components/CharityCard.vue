@@ -1,21 +1,20 @@
 <template>
-
-<div class="card" style="width: 18rem;">
-  <img :src="img" class="card-img-top" alt="...">
-  <div class="card-body">
-    <h5 id="title-text" class="card-title">{{utils.hexToUtf8(card_info["name"])}}</h5>
-    <p id="account-text" class="card-text">{{card_info["adr"]}}</p>
-    <p class="card-text target-ammount-text">Progress: {{card_info["recievedAmount"]/1000000000000000000}} / {{card_info["monthAmount"]}} ETH</p>
-    <div class="progress">
-        <div class="progress-bar progress-bar-striped bg-success" v-bind:style="{width: calculate_percentage + '%'}" role="progressbar" :aria-valuenow="calculate_percentage" aria-valuemin="0" aria-valuemax="100"></div>
+    <div class="card" style="width: 18rem;">
+    <img :src="img" class="card-img-top" alt="...">
+    <div class="card-body">
+        <h5 id="title-text" class="card-title">{{utils.hexToUtf8(card_info["name"])}}</h5>
+        <p id="account-text" class="card-text">{{card_info["adr"]}}</p>
+        <p class="card-text target-ammount-text">Progress: {{card_info["recievedAmount"]/1000000000000000000}} / {{card_info["monthAmount"]}} ETH</p>
+        <div class="progress">
+            <div class="progress-bar progress-bar-striped bg-success" v-bind:style="{width: calculate_percentage + '%'}" role="progressbar" :aria-valuenow="calculate_percentage" aria-valuemin="0" aria-valuemax="100"></div>
+        </div>
+        <input v-if="getRole == 2 && !isFinished" v-model="donate_ammount" class="form-control input-bar" placeholder="Amount to donate (ETH)">
+        <div class="footer">
+            <a :class="[getRole == 2 && !isFinished ? 'visible' : '']" id="donate-button" @click="donate()" href="#" class="btn btn-dark">Donate</a>
+            <i @click="goDetails()" class="fas fa-info-circle"></i>
+        </div>
     </div>
-     <input v-if="getRole == 2 && !isFinished" v-model="donate_ammount" class="form-control input-bar" placeholder="Amount to donate (ETH)">
-     <div class="footer">
-        <a :class="[getRole == 2 && !isFinished ? 'visible' : '']" id="donate-button" @click="donate()" href="#" class="btn btn-dark">Donate</a>
-        <i @click="goDetails()" class="fas fa-info-circle"></i>
-     </div>
-  </div>
-</div>
+    </div>
 </template>
 
 <script>
@@ -42,7 +41,7 @@ export default {
             donate_ammount: "",
             value: 20,
             loaded: false,
-            img: ""
+            img: image
         }
     },
     methods:{
@@ -56,7 +55,6 @@ export default {
             this.donate_ammount = ""
         },
         async load_image(){
-            console.log(this.card_info.image)
             if(this.card_info == undefined || this.card_info.image == "" || this.card_info.image == undefined || this.card_info.image == null) return;
             let img = await fetch(`http://127.0.0.1:8081/ipfs/${this.card_info.image}/`);
 		    this.img = await img.text();
@@ -65,7 +63,6 @@ export default {
     },
     mounted(){
     this.load_image();
-    console.log("Card Info: ",this.card_info)
   }
 }
 </script>
@@ -92,7 +89,7 @@ export default {
 .card-img-top{
     display: block;
     width: auto;
-    height: 200px;
+    height: 250px;
     margin-left: auto;
     margin-right: auto;
 }

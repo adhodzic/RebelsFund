@@ -194,7 +194,6 @@ export default {
       return ipfsResponse;
     },
     async load_image(){
-      console.log(this.image)
       if(this.getCurrentUser.image == "" || this.getCurrentUser.image == undefined){ this.image = "https://logowik.com/content/uploads/images/753_wwf.jpg"; return;}
       let img = await fetch(`http://127.0.0.1:8081/ipfs/${this.getCurrentUser.image}/`);
       this.image = await img.text();
