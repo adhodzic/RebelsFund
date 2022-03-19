@@ -2,9 +2,9 @@
 pragma solidity >=0.4.22 <0.9.0;
 
 contract RebelsFund {
-  event SignatureAdded(string message, bytes32 name);
+  event SignatureAdded(string message, string name);
   struct Charity{
-    bytes32 name;
+    string name;
     address adr;
     uint256 monthAmount;
     uint256 recievedAmount;
@@ -14,7 +14,7 @@ contract RebelsFund {
     bool exist;
   }
   struct User{
-    bytes32 name;
+    string name;
     string location;
     string email;
     string image;
@@ -33,7 +33,7 @@ contract RebelsFund {
       charity[receiver].recievedAmount += msg.value;
     }
   }
-  function signCharity(bytes32 name, uint monthAmount, string memory image, string memory location, string memory email) public {
+  function signCharity(string memory name, uint monthAmount, string memory image, string memory location, string memory email) public {
     if(!charity[msg.sender].exist){
       charity[msg.sender] = Charity(name,msg.sender, monthAmount, 0, image, location, email, true);
       charityAddresses[charityAddressesCount] = msg.sender;
@@ -44,7 +44,7 @@ contract RebelsFund {
     }
   }
 
-  function signUser(bytes32 name, string memory location, string memory email, string memory image) public {
+  function signUser(string memory name, string memory location, string memory email, string memory image) public {
     if(!user[msg.sender].exist){
       user[msg.sender] = User(name,location,email, image,true);
       emit SignatureAdded("New donor added!", name);
@@ -75,6 +75,12 @@ contract RebelsFund {
     }
   }
 
+  function getOneCharity(address adr) public view returns(Charity memory newCharity){
+    if(charity[adr].exist){
+      return charity[adr];
+    }
+  }
+
   function getAllCharity() public view returns (Charity[] memory){
     Charity[] memory charities = new Charity[](charityAddressesCount);
     for (uint i = 0; i < charityAddressesCount; i++) {
@@ -84,8 +90,8 @@ contract RebelsFund {
     return charities;
   }
 
-  function updateCharity(bytes32 name, uint256 monthAmount, string memory image, string memory location, string memory email) public {
-    if(name != 0){
+  function updateCharity(string memory name, uint256 monthAmount, string memory image, string memory location, string memory email) public {
+    if(keccak256(abi.encodePacked((name))) != ""){
       charity[msg.sender].name = name;
     }
     if(monthAmount >= 0){
@@ -102,8 +108,8 @@ contract RebelsFund {
     }
   }
 
-  function updateDonor(bytes32 name, string memory location, string memory email, string memory image) public {
-    if(name != 0){
+  function updateDonor(string memory name, string memory location, string memory email, string memory image) public {
+    if(keccak256(abi.encodePacked((name))) != ""){
       user[msg.sender].name = name;
     }
     if(keccak256(abi.encodePacked((location))) != ""){

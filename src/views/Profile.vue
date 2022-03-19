@@ -29,7 +29,7 @@
               </div>
               <p class="info" style="width: 100px;">Name:</p>
               <p :class="[edit_mode ? 'invisible' : 'visible']" class="info">{{getName}}</p>
-              <i :class="[edit_mode ? 'invisible' : 'visible']" class="far fa-question-circle"></i>
+              <i :class="[edit_mode ? 'invisible' : 'visible']" class="far fa-question-circle" :cont="getAddress"></i>
               <!--If in edit mode show input-->
               <input :class="[edit_mode ? 'visible' : 'invisible']" type="text" class="form-control" v-model="name">
             </div>
@@ -124,14 +124,11 @@ export default {
     ...mapGetters(["getRole","getCurrentUser"]),
     ...mapGetters("drizzle", ["drizzleInstance", "isDrizzleInitialized"]),
     ...mapGetters("contracts", ["getContractData"]),
-    utils() {
-      return this.drizzleInstance.web3.utils;
-    },
     calculate_percentage(){
       return ((this.getCurrentUser.recievedAmount/1e18)/this.getCurrentUser.monthAmount)*100
     },
     getName() {
-      if(this.getCurrentUser.name)return this.utils.toUtf8(this.getCurrentUser.name)
+      if(this.getCurrentUser.name)return this.getCurrentUser.name
       else ""
     },
     getEmail(){
@@ -139,11 +136,14 @@ export default {
     },
     getLocation(){
       return this.getCurrentUser.location
+    },
+    getAddress(){
+      return this.getCurrentUser.adr
     }
   },
   methods: {
     update_info(){
-      this.name = this.utils.toUtf8(this.getCurrentUser.name);
+      this.name = this.getCurrentUser.name;
       this.location = this.getCurrentUser.location;
       this.email = this.getCurrentUser.email;
       this.target_amount = this.getCurrentUser.monthAmount;
@@ -170,9 +170,9 @@ export default {
       }
       if (this.isDrizzleInitialized) {
         if(this.getRole == 1){
-          await this.drizzleInstance.contracts.RebelsFund.methods.updateCharity(this.utils.toHex(this.name), parseFloat(this.target_amount), image.path, this.location, this.email).send();
+          await this.drizzleInstance.contracts.RebelsFund.methods.updateCharity(this.name, parseFloat(this.target_amount), image.path, this.location, this.email).send();
         }else if(this.getRole == 2){
-          await this.drizzleInstance.contracts.RebelsFund.methods.updateDonor(this.utils.toHex(this.name), this.location, this.email).send();
+          await this.drizzleInstance.contracts.RebelsFund.methods.updateDonor(this.name, this.location, this.email).send();
         }
       }
       this.$parent.getUserRole();
@@ -192,7 +192,7 @@ export default {
     },
     async load_image(){
       if(this.getCurrentUser.image == "" || this.getCurrentUser.image == undefined){ this.image = "https://logowik.com/content/uploads/images/753_wwf.jpg"; return;}
-      let img = await fetch(`http://127.0.0.1:8081/ipfs/${this.getCurrentUser.image}/`);
+      let img = await fetch(`http://127.0.0.1:8080/ipfs/${this.getCurrentUser.image}/`);
       this.image = await img.text();
       this.loaded = true; // Dohvati base64URL
     }
@@ -302,7 +302,9 @@ export default {
   margin-right: 5px;
 }
 .fa-question-circle::after{
+  content: "";
   opacity: 0;
+  position: absolute;
   width: auto;
   height: 24px;
   font-size: 14px;
@@ -311,13 +313,13 @@ export default {
   background: rgb(245, 245, 245);
   border-radius: 5px;
   border: 1px solid rgb(82, 82, 82);
-  transition: all 2s ease-in-out;
+  
 }
 .fa-question-circle:hover::after{
-  opacity: 1;
-  position: absolute;
-  content: 'Account number: 0x94Aae3fB6D4Eb2bC4DD46124A789f9273E50C962';
-  transform: translateY(-4px);
+  content: attr(cont);
+  opacity: 1; 
+  transform: translateY(-2px);
+  transition: all 0.2s ease-in-out;
 }
 #save-btn{
   margin-top: 15px;

@@ -148,9 +148,6 @@ export default {
   computed: {
     ...mapGetters("drizzle", ["drizzleInstance", "isDrizzleInitialized"]),
     ...mapGetters(["getRole"]),
-    utils() {
-      return this.drizzleInstance.web3.utils;
-    },
   },
   async beforeRouteEnter(to, from, next) {
     while (store.getters.getRole == -1) {
@@ -182,7 +179,7 @@ export default {
         if (this.charity_name != "" && this.charity_month_amount != "") {
           await this.drizzleInstance.contracts.RebelsFund.methods
             .signCharity(
-              this.utils.toHex(this.charity_name),
+              this.charity_name,
               parseFloat(this.charity_month_amount),
               image.path,
               this.location,
@@ -207,7 +204,7 @@ export default {
       if (this.isDrizzleInitialized) {
         if (this.donor_name != "") {
           await this.drizzleInstance.contracts.RebelsFund.methods
-            .signUser(this.utils.toHex(this.donor_name), this.location, this.email, image.path)
+            .signUser(this.donor_name, this.location, this.email, image.path)
             .send();
           await this.$parent.getUserRole();
           this.$router.push({ name: "Home" });

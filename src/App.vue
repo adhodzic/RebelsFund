@@ -26,7 +26,7 @@
         <router-link to="/profile">
           <div v-if="$route.name != 'Login'" class="profile">
               <p v-if="getCurrentUser.name != null && getCurrentUser != ''" class="profile-name">
-                {{ utils.toUtf8(getCurrentUser.name) }}
+                {{ getCurrentUser.name }}
               </p>
               <i :class="[img == null ? 'visible' : 'invisible']" class="fas fa-user-circle"></i>
               <img :class="[img != null ? 'visible' : 'invisible']" :src="img" class="profile-image" alt="">
@@ -77,9 +77,6 @@ export default {
     ...mapGetters("drizzle", ["drizzleInstance", "isDrizzleInitialized"]),
     ...mapGetters("contracts", ["getContractData"]),
     ...mapGetters(["getRole", "getCurrentUser"]),
-    utils() {
-      return this.drizzleInstance.web3.utils;
-    },
     getRoute() {
       return useRoute;
     },
@@ -90,7 +87,7 @@ export default {
         this.img = null;
         return;
       }
-        let img = await fetch(`http://127.0.0.1:8081/ipfs/${this.getCurrentUser.image}/`);
+        let img = await fetch(`http://127.0.0.1:8080/ipfs/${this.getCurrentUser.image}/`);
 		    this.img = await img.text();
         this.loaded = true; // Dohvati base64URL
     },

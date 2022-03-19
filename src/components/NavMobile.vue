@@ -33,7 +33,7 @@
             v-if="getCurrentUser.name != null && getCurrentUser != ''"
             class="profile-name"
           >
-            {{ utils.toUtf8(getCurrentUser.name) }}
+            {{ getCurrentUser.name }}
           </p>
         </div>
         </div>
@@ -51,9 +51,6 @@ export default {
     ...mapGetters("drizzle", ["drizzleInstance", "isDrizzleInitialized"]),
     ...mapGetters("contracts", ["getContractData"]),
     ...mapGetters(["getRole", "getCurrentUser"]),
-    utils() {
-      return this.drizzleInstance.web3.utils;
-    },
     getRoute() {
       return useRoute;
     },

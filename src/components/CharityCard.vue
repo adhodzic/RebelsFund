@@ -2,7 +2,7 @@
     <div class="card" style="width: 18rem;">
     <img :src="img" class="card-img-top" alt="...">
     <div class="card-body">
-        <h5 id="title-text" class="card-title">{{utils.hexToUtf8(card_info["name"])}}</h5>
+        <h5 id="title-text" class="card-title">{{card_info["name"]}}</h5>
         <p id="account-text" class="card-text">{{card_info["adr"]}}</p>
         <p class="card-text target-ammount-text">Progress: {{card_info["recievedAmount"]/1000000000000000000}} / {{card_info["monthAmount"]}} ETH</p>
         <div class="progress">
@@ -26,9 +26,6 @@ export default {
     computed:{
         ...mapGetters(["getRole","getCurrentUser"]),
         ...mapGetters("drizzle", ["drizzleInstance", "isDrizzleInitialized"]),
-        utils() {
-            return this.drizzleInstance.web3.utils
-        },
         calculate_percentage(){
             return ((this.card_info.recievedAmount/1e18)/this.card_info.monthAmount)*100
         },
@@ -56,7 +53,7 @@ export default {
         },
         async load_image(){
             if(this.card_info == undefined || this.card_info.image == "" || this.card_info.image == undefined || this.card_info.image == null) return;
-            let img = await fetch(`http://127.0.0.1:8081/ipfs/${this.card_info.image}/`);
+            let img = await fetch(`http://127.0.0.1:8080/ipfs/${this.card_info.image}/`);
 		    this.img = await img.text();
             this.loaded = true; // Dohvati base64URL
         }
