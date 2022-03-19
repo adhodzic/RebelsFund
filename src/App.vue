@@ -43,15 +43,15 @@
   </div>
  <div class="metamask" v-else>
     <a>Waiting for metamask</a>
-    <div style="margin-left:15px;" class="spinner-border text-dark" role="status">
-  <span class="visually-hidden">Loading...</span>
-</div>
      <div class="animation">
       <img
             class="logo-anim"
             src="@/assets/metamask.png"
           />
     </div>
+  <div style="margin-top:55px;" class="spinner-border text-dark" role="status">
+  <span class="visually-hidden">Loading...</span>
+</div>
     <!--  First sign in with metamask... -->
   </div>
 </template>
@@ -169,14 +169,14 @@ export default {
 <style lang="scss" scoped>
 
  @keyframes image {
-     0% {
-    left: 0;
+0% {
+    transform: scale(1, 1);
   }
   50% {
-    left: 200px;
+    transform: scale(1.5, 1.5);
   }
   100% {
-    left: 0;    
+    transform: scale(1, 1);
   }
   }
 

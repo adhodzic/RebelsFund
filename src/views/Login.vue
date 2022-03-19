@@ -57,6 +57,7 @@
             aria-label=".form-control-md"
           />
           <input
+            v-model="location"
             class="form-control form-control-md"
             type="text"
             placeholder="HQ address"

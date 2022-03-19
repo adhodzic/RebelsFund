@@ -363,7 +363,7 @@ hr{
   border-radius: 15px;
   transition:max-height 0.5s ease; // note that we're transitioning max-height, not height!
   height:auto;
-  max-height:600px;
+  max-height:850px;
   overflow: hidden;
 }#box-2 {
   padding: 15px;
