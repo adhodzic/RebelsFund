@@ -12,6 +12,7 @@ contract RebelsFund {
     string location;
     string email;
     bool exist;
+    string category;
   }
   struct User{
     string name;
@@ -33,9 +34,9 @@ contract RebelsFund {
       charity[receiver].recievedAmount += msg.value;
     }
   }
-  function signCharity(string memory name, uint monthAmount, string memory image, string memory location, string memory email) public {
+  function signCharity(string memory name, uint monthAmount, string memory image, string memory location, string memory email , string memory category) public {
     if(!charity[msg.sender].exist){
-      charity[msg.sender] = Charity(name,msg.sender, monthAmount, 0, image, location, email, true);
+      charity[msg.sender] = Charity(name,msg.sender, monthAmount, 0, image, location, email, true, category);
       charityAddresses[charityAddressesCount] = msg.sender;
       charityAddressesCount++;
       emit SignatureAdded("New charity added!", name);

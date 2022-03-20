@@ -13,6 +13,7 @@ export default new Vuex.Store({
     location: null,
     email: null,
     image: "",
+    selected:"",
     charitys: []
   },
   getters:{
@@ -30,7 +31,8 @@ export default new Vuex.Store({
         monthAmount: state.monthAmount,
         location: state.location,
         email: state.email,
-        image: state.image
+        image: state.image,
+        selected:state.selected
       }
       return user
     }
@@ -50,6 +52,7 @@ export default new Vuex.Store({
       state.email = currentUser.email;
       state.location = currentUser.location;
       state.image = currentUser.image;
+      state.selected = currentUser.selected
     }
   },
   actions: {

@@ -2,11 +2,10 @@
   <div class="profile">
     <div class="container">
       <div style="justify-content: center;" class="row">
-        <img
-            class="info"
-            id="profile-img"
-            :src="image"
-          />
+                <img v-if="image"
+              id="profile-img"
+              :src="image"
+            />
       </div>
       <div class="row">
         <div class="col-md">
@@ -36,6 +35,12 @@
               <i id="icon" class="fas fa-envelope"></i>
               <p class="info" style="width: 100px;">Email:</p>
               <p class="info">{{user.email}}</p>
+            </div>
+             <div id="separator"></div>
+              <div class="inline-row">
+              <i id="icon" class="fas fa-heart"></i>
+              <p class="info" style="width: 100px;">Category:</p>
+              <p class="info">{{user.category}}</p>
             </div>
           </div>
 
@@ -97,7 +102,7 @@ export default {
       user: {},
       target_amount: "",
       edit_mode:false,
-      image: "https://logowik.com/content/uploads/images/753_wwf.jpg"
+      image: ""
     }
   },
   components:{
@@ -119,8 +124,8 @@ export default {
       const user = await this.drizzleInstance.contracts.RebelsFund.methods.getOneCharity(adr).call();
       this.user = user
     },
-    async load_image(){
-      if(this.card_info == undefined || this.card_info.image == "" || this.card_info.image == undefined || this.card_info.image == null) return;
+      async load_image(){
+      if(this.getCurrentUser.image == "" || this.getCurrentUser.image == undefined){ this.image = "@/assets/RebelsFundLightLogo.png"; return;}
       let img = await fetch(`http://127.0.0.1:8080/ipfs/${this.getCurrentUser.image}/`);
       this.image = await img.text();
       this.loaded = true; // Dohvati base64URL

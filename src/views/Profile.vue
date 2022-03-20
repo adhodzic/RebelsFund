@@ -78,7 +78,7 @@
             <div id="separator"></div>
               <div class="inline-row">
                 <i id="icon" class="fab fa-ethereum"></i>
-                <p class="info" style="width: 100px;">Donated:</p>
+                <p class="info" style="width: 100px;">Fundraised:</p>
                 <p class="info">{{getCurrentUser.recievedAmount/1e18}}</p>
                 <img id="eth-img" src="@/assets/eth.png" />
             </div>
@@ -191,7 +191,7 @@ export default {
       return ipfsResponse;
     },
     async load_image(){
-      if(this.getCurrentUser.image == "" || this.getCurrentUser.image == undefined){ this.image = "https://logowik.com/content/uploads/images/753_wwf.jpg"; return;}
+      if(this.getCurrentUser.image == "" || this.getCurrentUser.image == undefined){ this.image = "@/assets/RebelsFundLightLogo.png"; return;}
       let img = await fetch(`http://127.0.0.1:8080/ipfs/${this.getCurrentUser.image}/`);
       this.image = await img.text();
       this.loaded = true; // Dohvati base64URL

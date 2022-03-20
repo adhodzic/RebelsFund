@@ -16,6 +16,7 @@
               type="text"
               placeholder="Username"
               aria-label=".form-control-md"
+              maxlength="16"
             />
             <input
               v-model="email"
@@ -55,6 +56,14 @@
             type="text"
             placeholder="Organization name"
             aria-label=".form-control-md"
+            maxlength="16"
+          />
+          <input
+            v-model="charity_email"
+            class="form-control form-control-md"
+            type="text"
+            placeholder="Organization email"
+            aria-label=".form-control-md"
           />
           <input
             v-model="location"
@@ -71,6 +80,7 @@
             aria-label=".form-control-md"
           />
           <select
+            v-model="selected"
             class="form-select form-select-lg mb-3"
             aria-label=".form-select-md example"
           >
@@ -79,6 +89,7 @@
             </option>
           </select>
           <input
+            v-model="yt_link"
             class="form-control form-control-md"
             type="text"
             placeholder="Link to Youtube video"
@@ -126,7 +137,9 @@ export default {
       type: "charity",
       donor_name: "",
       charity_name: "",
+      charity_email:"",
       charity_month_amount: "",
+      yt_link:"",
       location: "",
       email: "",
       country: "",
@@ -184,7 +197,8 @@ export default {
               parseFloat(this.charity_month_amount),
               image.path,
               this.location,
-              this.email
+              this.charity_email,
+              this.selected
             )
             .send();
           await this.$parent.getUserRole();
