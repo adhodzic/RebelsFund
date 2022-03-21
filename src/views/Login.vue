@@ -198,6 +198,7 @@ export default {
               image.path,
               this.location,
               this.charity_email,
+              this.yt_link,
               this.selected
             )
             .send();

@@ -2,7 +2,7 @@
   <div class="profile">
     <div class="container">
       <div style="justify-content: center;" class="row">
-                <img v-if="image"
+            <img v-if="image"
               id="profile-img"
               :src="image"
             />
@@ -50,7 +50,7 @@
             </div>
             <div id="separator"></div>
             <div class="yt-container">
-                <iframe src="https://www.youtube.com/embed/Tss6HtHlLuw"
+                <iframe :src="embededYtLink"
                 class="ytvideo" 
                 allow="accelerometer; autoplay; 
                 clipboard-write; encrypted-media; 
@@ -118,6 +118,18 @@ export default {
     calculate_percentage(){
       return ((this.user.recievedAmount/1e18)/this.user.monthAmount)*100
     },
+    embededYtLink(){
+      let url = this.user.ytLink
+      if(!url) return
+      if(url.includes("/embed/")) return url
+
+      var urlId = url.substring(
+        url.indexOf("v=") + 2, 
+        url.indexOf("v=") + 13);
+      let embedLink = `https://www.youtube.com/embed/${urlId}`
+
+      return embedLink
+    }
   },
   methods: {
     async load_user(adr){

@@ -11,6 +11,7 @@ contract RebelsFund {
     string image;
     string location;
     string email;
+    string ytLink;
     bool exist;
     string category;
   }
@@ -34,9 +35,9 @@ contract RebelsFund {
       charity[receiver].recievedAmount += msg.value;
     }
   }
-  function signCharity(string memory name, uint monthAmount, string memory image, string memory location, string memory email , string memory category) public {
+  function signCharity(string memory name, uint monthAmount, string memory image, string memory location, string memory email , string memory ytLink, string memory category) public {
     if(!charity[msg.sender].exist){
-      charity[msg.sender] = Charity(name,msg.sender, monthAmount, 0, image, location, email, true, category);
+      charity[msg.sender] = Charity(name,msg.sender, monthAmount, 0, image, location, email, ytLink, true, category);
       charityAddresses[charityAddressesCount] = msg.sender;
       charityAddressesCount++;
       emit SignatureAdded("New charity added!", name);
@@ -91,7 +92,7 @@ contract RebelsFund {
     return charities;
   }
 
-  function updateCharity(string memory name, uint256 monthAmount, string memory image, string memory location, string memory email) public {
+  function updateCharity(string memory name, uint256 monthAmount, string memory image, string memory location, string memory email, string memory ytLink) public {
     if(keccak256(abi.encodePacked((name))) != ""){
       charity[msg.sender].name = name;
     }
@@ -106,6 +107,9 @@ contract RebelsFund {
     }
     if(keccak256(abi.encodePacked((email))) != ""){
       charity[msg.sender].email = email;
+    }
+    if(keccak256(abi.encodePacked((ytLink))) != ""){
+      charity[msg.sender].ytLink = ytLink;
     }
   }
 
