@@ -378,6 +378,8 @@ input::placeholder{
   margin-top: 20px;
 }
 .form-control {
+  width: 100% !important;
+  max-width: 100% !important;
   margin-bottom: 10px;
   font-size: 14px;
 }

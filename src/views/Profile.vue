@@ -55,7 +55,7 @@
             <ImageUploader :class=" [edit_mode ? 'visible' : 'invisible']" ref="pond"></ImageUploader>
             <div id="separator"></div>
             <div class="inline-row">
-                <button :class="[edit_mode ? 'visible' : 'invisible']" type="button" @click="save_changes" class="btn save-btn m-2">Save</button>
+                <button :class="[edit_mode ? 'visible' : 'invisible']" type="button" @click="updateData" class="btn save-btn m-2">Save</button>
                 <button :class="[edit_mode ? 'visible' : 'invisible']" type="button" @click="close" class="btn cancel-btn m-2">Cancel</button>
             </div>
           </div>
@@ -149,18 +149,10 @@ export default {
       this.target_amount = this.getCurrentUser.monthAmount;
       this.edit_mode = true;  
     },
-    async save_changes(){
-      if(this.getRole == 1){
-        await this.updateCharity();
-      }else{
-        await this.updateDonor();
-      }
-      this.edit_mode = false;
-    },
     close(){
       this.edit_mode = false;
     },
-    async updateCharity(){
+    async updateData(){
       await this.$parent.checkState();
       let image = await this.postImage();
       if(image == null){
@@ -172,9 +164,10 @@ export default {
         if(this.getRole == 1){
           await this.drizzleInstance.contracts.RebelsFund.methods.updateCharity(this.name, parseFloat(this.target_amount), image.path, this.location, this.email).send();
         }else if(this.getRole == 2){
-          await this.drizzleInstance.contracts.RebelsFund.methods.updateDonor(this.name, this.location, this.email).send();
+          await this.drizzleInstance.contracts.RebelsFund.methods.updateDonor(this.name, this.location, this.email, image.path).send();
         }
       }
+      this.edit_mode = false;
       this.$parent.getUserRole();
       this.load_image();
     },
