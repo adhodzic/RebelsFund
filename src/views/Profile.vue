@@ -2,6 +2,7 @@
   <div class="profile">
     <div class="container">
       <div class="row">
+        <div class="col-md"></div>
         <div style="align-text: center; min-width: 650px;" class="col-md">
           <img v-if="image"
               id="profile-img"
@@ -12,7 +13,7 @@
       </div>
       <div class="row">
         <div class="col-md">
-          <div class="shadow-lg p-3 mb-5 bg-body" :class="[!edit_mode ? 'visible' : '']" id="box">
+          <div :class="[!edit_mode ? 'visible' : '']" id="box">
             <div class="general-header">
               <p class="header-title">General information</p>
               <div class="tools">
@@ -52,10 +53,18 @@
               <input :class="[edit_mode ? 'visible' : 'invisible']" type="text" class="form-control" v-model="email">
             </div>
             <div id="separator"></div>
+            <div class="inline-row">
+              <i id="icon" class="fas fa-heart"></i>
+              <p class="info" style="width: 100px;">Category:</p>
+              <p :class="[edit_mode ? 'invisible' : 'visible']" class="info">{{getCat}}</p>
+              <!--If in edit mode show input-->
+              <input :class="[edit_mode ? 'visible' : 'invisible']" type="text" class="form-control" v-model="category">
+            </div>
+            <div id="separator"></div>
             <ImageUploader :class=" [edit_mode ? 'visible' : 'invisible']" ref="pond"></ImageUploader>
             <div id="separator"></div>
             <div class="inline-row">
-                <button :class="[edit_mode ? 'visible' : 'invisible']" type="button" @click="updateData" class="btn save-btn m-2">Save</button>
+                <button :class="[edit_mode ? 'visible' : 'invisible']" type="button" @click="save_changes" class="btn save-btn m-2">Save</button>
                 <button :class="[edit_mode ? 'visible' : 'invisible']" type="button" @click="close" class="btn cancel-btn m-2">Cancel</button>
             </div>
           </div>
@@ -63,7 +72,7 @@
 
 
         <div v-if="getRole == 1" class="col-md">
-          <div class="shadow-lg p-3 mb-5 bg-body rounded" id="box">
+          <div id="box">
             <div class="general-header">
               <p class="header-title">Funding information</p>
             </div>
@@ -113,7 +122,8 @@ export default {
       email:"",
       target_amount: "",
       edit_mode:false,
-      image: ""
+      image: "",
+      category:""
     }
   },
   components:{
@@ -139,6 +149,10 @@ export default {
     },
     getAddress(){
       return this.getCurrentUser.adr
+    },
+    getCat(){
+      console.log("CAT",this.getCurrentUser.category)
+      return this.getCurrentUser.category
     }
   },
   methods: {
@@ -147,12 +161,21 @@ export default {
       this.location = this.getCurrentUser.location;
       this.email = this.getCurrentUser.email;
       this.target_amount = this.getCurrentUser.monthAmount;
-      this.edit_mode = true;  
+      this.category =  this.getCurrentUser.category
+      this.edit_mode = true;
+    },
+    async save_changes(){
+      if(this.getRole == 1){
+        await this.updateCharity();
+      }else{
+        await this.updateDonor();
+      }
+      this.edit_mode = false;
     },
     close(){
       this.edit_mode = false;
     },
-    async updateData(){
+    async updateCharity(){
       await this.$parent.checkState();
       let image = await this.postImage();
       if(image == null){
@@ -164,10 +187,9 @@ export default {
         if(this.getRole == 1){
           await this.drizzleInstance.contracts.RebelsFund.methods.updateCharity(this.name, parseFloat(this.target_amount), image.path, this.location, this.email).send();
         }else if(this.getRole == 2){
-          await this.drizzleInstance.contracts.RebelsFund.methods.updateDonor(this.name, this.location, this.email, image.path).send();
+          await this.drizzleInstance.contracts.RebelsFund.methods.updateDonor(this.name, this.location, this.email).send();
         }
       }
-      this.edit_mode = false;
       this.$parent.getUserRole();
       this.load_image();
     },
@@ -193,6 +215,7 @@ export default {
   async mounted() {
     await this.$parent.getUserRole();
     await this.load_image();
+    console.log("USER: ",this.getCurrentUser)
   },
 };
 </script>

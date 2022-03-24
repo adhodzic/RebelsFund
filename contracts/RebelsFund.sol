@@ -92,7 +92,7 @@ contract RebelsFund {
     return charities;
   }
 
-  function updateCharity(string memory name, uint256 monthAmount, string memory image, string memory location, string memory email, string memory ytLink) public {
+  function updateCharity(string memory name, uint256 monthAmount, string memory image, string memory location, string memory email, string memory ytLink , string memory category) public {
     if(keccak256(abi.encodePacked((name))) != ""){
       charity[msg.sender].name = name;
     }
@@ -110,6 +110,9 @@ contract RebelsFund {
     }
     if(keccak256(abi.encodePacked((ytLink))) != ""){
       charity[msg.sender].ytLink = ytLink;
+    }
+     if(keccak256(abi.encodePacked((category))) != ""){
+      charity[msg.sender].category = category;
     }
   }
 

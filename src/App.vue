@@ -126,7 +126,8 @@ export default {
             recievedAmount: charity["recievedAmount"],
             location: charity["location"],
             email: charity["email"],
-            image: charity["image"]
+            image: charity["image"],
+            category:charity["category"]
           };
           this.$store.dispatch("setCurrentUser", obj);
         }

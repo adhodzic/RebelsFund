@@ -191,6 +191,7 @@ export default {
       }
       if (this.isDrizzleInitialized) {
         if (this.charity_name != "" && this.charity_month_amount != "") {
+          console.log("SELECTED",this.selected)
           await this.drizzleInstance.contracts.RebelsFund.methods
             .signCharity(
               this.charity_name,
