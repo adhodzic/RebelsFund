@@ -221,7 +221,7 @@ export default {
       if (this.isDrizzleInitialized) {
         if (this.donor_name != "") {
           await this.drizzleInstance.contracts.RebelsFund.methods
-            .signUser(this.donor_name, this.location, this.email, image.path)
+            .signUser(this.donor_name, this.location, this.email, image.path,this.country,this.region,this.time1)
             .send();
           await this.$parent.getUserRole();
           this.$router.push({ name: "Home" });

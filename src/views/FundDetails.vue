@@ -135,6 +135,7 @@ export default {
     async load_user(adr){
       const user = await this.drizzleInstance.contracts.RebelsFund.methods.getOneCharity(adr).call();
       this.user = user
+      console.log("USER",user)
     },
       async load_image(){
       if(this.getCurrentUser.image == "" || this.getCurrentUser.image == undefined){ this.image = "@/assets/RebelsFundLightLogo.png"; return;}

@@ -14,7 +14,10 @@ export default new Vuex.Store({
     email: null,
     image: "",
     category:"",
-    charitys: []
+    charitys: [],
+    country:"",
+    region:"",
+    dob:null
   },
   getters:{
     getRole: state => {
@@ -32,7 +35,10 @@ export default new Vuex.Store({
         location: state.location,
         email: state.email,
         image: state.image,
-        category:state.category
+        category:state.category,
+        country:state.country,
+        region:state.region,
+        dob:state.dob
       }
       return user
     }
@@ -52,7 +58,10 @@ export default new Vuex.Store({
       state.email = currentUser.email;
       state.location = currentUser.location;
       state.image = currentUser.image;
-      state.category = currentUser.category
+      state.category = currentUser.category,
+      state.country = currentUser.country,
+      state.region = currentUser.region,
+      state.dob = currentUser.dob
     }
   },
   actions: {

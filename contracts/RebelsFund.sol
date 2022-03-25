@@ -21,6 +21,9 @@ contract RebelsFund {
     string email;
     string image;
     bool exist;
+    string country;
+    string region;
+    string dob;
   }
   mapping (address => User) public user;
   mapping (address => Charity) public charity;
@@ -46,9 +49,9 @@ contract RebelsFund {
     }
   }
 
-  function signUser(string memory name, string memory location, string memory email, string memory image) public {
+  function signUser(string memory name, string memory location, string memory email, string memory image,string memory country,string memory region,string memory dob) public {
     if(!user[msg.sender].exist){
-      user[msg.sender] = User(name,location,email, image,true);
+      user[msg.sender] = User(name,location,email, image,true,country,region,dob);
       emit SignatureAdded("New donor added!", name);
     }else{
       emit SignatureAdded("You are already donor", name);
@@ -116,7 +119,7 @@ contract RebelsFund {
     }
   }
 
-  function updateDonor(string memory name, string memory location, string memory email, string memory image) public {
+  function updateDonor(string memory name, string memory location, string memory email, string memory image,string memory country,string memory region,string memory dob) public {
     if(keccak256(abi.encodePacked((name))) != ""){
       user[msg.sender].name = name;
     }
@@ -128,6 +131,15 @@ contract RebelsFund {
     }
     if(keccak256(abi.encodePacked((image))) != ""){
       user[msg.sender].image = image;
+    }
+     if(keccak256(abi.encodePacked((country))) != ""){
+      user[msg.sender].country = country;
+    }
+     if(keccak256(abi.encodePacked((region))) != ""){
+      user[msg.sender].region = region;
+    }
+     if(keccak256(abi.encodePacked((dob))) != ""){
+      user[msg.sender].dob = dob;
     }
   }
 }
