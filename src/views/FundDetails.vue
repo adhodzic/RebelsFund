@@ -135,18 +135,17 @@ export default {
     async load_user(adr){
       const user = await this.drizzleInstance.contracts.RebelsFund.methods.getOneCharity(adr).call();
       this.user = user
-      console.log("USER",user)
     },
-      async load_image(){
-      if(this.getCurrentUser.image == "" || this.getCurrentUser.image == undefined){ this.image = "@/assets/RebelsFundLightLogo.png"; return;}
-      let img = await fetch(`http://127.0.0.1:8080/ipfs/${this.getCurrentUser.image}/`);
+    async load_image(){
+      if(this.user.image == "" || this.user.image == undefined){ this.image = "@/assets/RebelsFundLightLogo.png"; return;}
+      let img = await fetch(`http://127.0.0.1:8080/ipfs/${this.user.image}/`);
       this.image = await img.text();
       this.loaded = true; // Dohvati base64URL
     }
   },
-  mounted() {
-    this.load_user(this.$route.params.id)
-    this.load_image();
+  async mounted() {
+    await this.load_user(this.$route.params.id)
+    await this.load_image();
   },
 };
 </script>
