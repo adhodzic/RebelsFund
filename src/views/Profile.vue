@@ -160,7 +160,7 @@
               <button
                 :class="[edit_mode ? 'visible' : 'invisible']"
                 type="button"
-                @click="save_changes"
+                @click="updateCharity"
                 class="btn save-btn m-2"
               >
                 Save
@@ -297,14 +297,6 @@ export default {
       this.dob = this.getCurrentUser.dob;
       this.edit_mode = true;
     },
-    async save_changes() {
-      if (this.getRole == 1) {
-        await this.updateCharity();
-      } else {
-        await this.updateDonor();
-      }
-      this.edit_mode = false;
-    },
     close() {
       this.edit_mode = false;
     },
@@ -324,12 +316,14 @@ export default {
               parseFloat(this.target_amount),
               image.path,
               this.location,
-              this.email
+              this.email,
+              this.getCurrentUser.ytLink || "",
+              this.category
             )
             .send();
         } else if (this.getRole == 2) {
           await this.drizzleInstance.contracts.RebelsFund.methods
-            .updateDonor(this.name, this.location, this.email)
+            .updateDonor(this.name, this.location, this.email , this.image , this.country , this.region ,this.dob)
             .send();
         }
       }
