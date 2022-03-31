@@ -391,4 +391,14 @@ input::placeholder{
   color: whitesmoke;
   font-family: var(--bs-font-sans-serif);
 }
+
+@media (max-width: 768px) {
+  .col-md.title{
+    text-align: justify;
+    margin-left:20px;
+  }
+  .col-md.form{
+    width: 350px;
+  }
+}
 </style>

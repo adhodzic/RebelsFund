@@ -127,7 +127,8 @@ export default {
             location: charity["location"],
             email: charity["email"],
             image: charity["image"],
-            category:charity["category"]
+            category:charity["category"],
+            ytLink:charity["ytLink"]
           };
           this.$store.dispatch("setCurrentUser", obj);
         }
@@ -295,22 +296,22 @@ export default {
   font-size: 40px;
 }
 @media (max-width: 768px) {
-  @keyframes image {
-     0% {
-    left: 0;
+   @keyframes image {
+0% {
+    transform: scale(1, 1);
   }
   50% {
-    left: 100px;
+    transform: scale(1.5, 1.5);
   }
   100% {
-    left: 0;    
+    transform: scale(1, 1);
   }
   }
-  .logo-anim{
+ .logo-anim{
   width: 145px;
   height: 145px;
   animation-name: image;
-  animation-duration: 4s;
+  animation-duration: 5s;
   position: relative;
   animation-iteration-count: infinite;
   animation-direction: alternate;

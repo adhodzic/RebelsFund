@@ -1,7 +1,7 @@
 <template>
   <div class="profile">
     <div class="container">
-      <div class="row">
+      <div id="img-row" class="row">
         <div class="col-md"></div>
         <div style="align-text: center; min-width: 650px" class="col-md">
           <img v-if="image" id="profile-img" :src="image" />
@@ -9,8 +9,8 @@
         <div class="col-md"></div>
         <div v-if="getRole == 1" class="col-md"></div>
       </div>
-      <div class="row">
-        <div class="col-md">
+      <div id="gen-row" class="row">
+        <div id="gen-info" class="col-md">
           <div :class="[!edit_mode ? 'visible' : '']" id="box">
             <div class="general-header">
               <p class="header-title">General information</p>
@@ -100,6 +100,22 @@
                 v-model="category"
               />
             </div>
+            <div id="separator"></div>
+              <div v-if="getRole == 1" class="inline-row">
+              <i id="icon" class="fas fa-video"></i>
+              <p class="info" style="width: 100px">Link:</p>
+              <p :class="[edit_mode ? 'invisible' : 'visible']" class="info">
+                {{ getLink }}
+              </p>
+              <!--If in edit mode show input-->
+              <input
+                :class="[edit_mode ? 'visible' : 'invisible']"
+                type="text"
+                class="form-control"
+                v-model="ytLink"
+              />
+            </div>
+            <div id="separator"></div>
             <div v-if="getRole == 2" class="inline-row">
               <div id="icon">
                 <i class="fas fa-id-card"></i>
@@ -177,7 +193,7 @@
           </div>
         </div>
 
-        <div v-if="getRole == 1" class="col-md">
+        <div id="fund-info" v-if="getRole == 1" class="col-md">
           <div id="box">
             <div class="general-header">
               <p class="header-title">Funding information</p>
@@ -239,7 +255,9 @@ export default {
       category: "",
       country:"",
       region:"",
-      dob:""
+      dob:"",
+      ytLink:"",
+      user:{}
     };
   },
   components: {
@@ -283,7 +301,11 @@ export default {
     },
     getRegion(){
       return this.getCurrentUser.region
-    }
+    },
+    getLink(){
+      return this.getCurrentUser.ytLink
+    },
+
   },
   methods: {
     update_info() {
@@ -296,6 +318,7 @@ export default {
       this.region = this.getCurrentUser.region;
       this.dob = this.getCurrentUser.dob;
       this.edit_mode = true;
+      this.ytLink = this.getCurrentUser.ytLink
     },
     close() {
       this.edit_mode = false;
@@ -355,12 +378,13 @@ export default {
       );
       this.image = await img.text();
       this.loaded = true; // Dohvati base64URL
-    },
+    }
   },
   async mounted() {
     await this.$parent.getUserRole();
     await this.load_image();
     console.log("USER: ", this.getCurrentUser);
+    console.log("LINK: ",this.getCurrentUser.ytLink)
   },
 };
 </script>
@@ -605,6 +629,12 @@ hr {
   }
   #ytvideo {
     max-width: 100%;
+  }
+  #gen-row{
+    width: 350px;
+  }
+  #img-row{
+    width:350px;
   }
 }
 </style>
