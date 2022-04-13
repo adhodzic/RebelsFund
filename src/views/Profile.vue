@@ -101,21 +101,6 @@
               />
             </div>
             <div id="separator"></div>
-              <div v-if="getRole == 1" class="inline-row">
-              <i id="icon" class="fas fa-video"></i>
-              <p class="info" style="width: 100px">Link:</p>
-              <p :class="[edit_mode ? 'invisible' : 'visible']" class="info">
-                {{ getLink }}
-              </p>
-              <!--If in edit mode show input-->
-              <input
-                :class="[edit_mode ? 'visible' : 'invisible']"
-                type="text"
-                class="form-control"
-                v-model="ytLink"
-              />
-            </div>
-            <div id="separator"></div>
             <div v-if="getRole == 2" class="inline-row">
               <div id="icon">
                 <i class="fas fa-id-card"></i>
@@ -548,7 +533,7 @@ hr {
   border-radius: 15px;
   transition: max-height 0.5s ease; // note that we're transitioning max-height, not height!
   height: auto;
-  max-height: 850px;
+  max-height: 1050px;
   overflow: hidden;
 }
 #box-2 {
