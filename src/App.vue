@@ -21,6 +21,7 @@
             type="search"
             placeholder="Search"
             aria-label="Search"
+            v-model="search"
           />
         </div>
         <router-link to="/profile">
@@ -37,22 +38,22 @@
 
    <NavMobile id="nav-mobile"></NavMobile>
 
-    <router-view v-if="getRole != -1"></router-view>
+    <router-view :search="search" v-if="getRole != -1"></router-view>
     <!-- <h1>You are signed-in</h1> -->
     <nav class="navbar fixed-bottom navbar-dark bg-dark"></nav>
   </div>
- <div class="metamask" v-else>
+  <div class="metamask" v-else>
     <a>Waiting for metamask</a>
-     <div class="animation">
-      <img
-            class="logo-anim"
-            src="@/assets/metamask.png"
-          />
+    <div class="animation">
+    <img
+          class="logo-anim"
+          src="@/assets/metamask.png"
+        />
     </div>
-  <div style="margin-top:55px;" class="spinner-border text-dark" role="status">
-  <span class="visually-hidden">Loading...</span>
-</div>
-    <!--  First sign in with metamask... -->
+    <div style="margin-top:55px;" class="spinner-border text-dark" role="status">
+      <span class="visually-hidden">Loading...</span>
+    </div>
+    <a v-if="!isMetamaskInstalled">Metamask extension might be missing</a>
   </div>
 </template>
 
@@ -70,7 +71,8 @@ export default {
       name: "",
       amount: "",
       char: "",
-      img: null
+      img: null,
+      search: ""
     };
   },
   computed: {
@@ -143,17 +145,27 @@ export default {
     },
     async listenMMAccount() {
       let self = this;
-      window.ethereum.on("accountsChanged", async function (accounts) {
+        window.ethereum.on("accountsChanged", async function (accounts) {
         self.getUserRole();
         self.$store.dispatch("setCurrentUser", []);
-      });
+        });
     },
+    isMetamaskInstalled(){
+      if (window.ethereum && window.ethereum.isMetaMask) {
+        console.log("here")
+        return true;
+      }
+      return false;
+    }
   },
   async mounted() {
-    this.listenMMAccount();
-    this.$drizzleEvents.$on("drizzle/contractEvent", (payload) => {
+    if(this.isMetamaskInstalled()){
+      console.log("in")
+       this.listenMMAccount();
+       this.$drizzleEvents.$on("drizzle/contractEvent", (payload) => {
       //alert(payload.data.message + payload.data.name)
-    });
+      });
+    }
   },
   async created() {
     await this.getUserRole();

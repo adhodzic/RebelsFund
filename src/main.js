@@ -22,6 +22,7 @@ Vue.use(VuePageTransition)
 Vue.use(Vuetify)
 
 Vue.use(Vuex)
+
 Vue.use(drizzleVuePlugin, {store, drizzleOptions })
 
 Vue.config.productionTip = false

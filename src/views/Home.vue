@@ -1,7 +1,10 @@
 <template>
-  <div class="home">
+  <div class="home" >
     <div class="flex-container">
-      <div v-bind:key="c[0]" v-for="c in getCharitys">
+      <div v-if="!filterCharitys || !filterCharitys.length">
+        <h4>No charitys found...</h4>
+      </div>
+      <div v-else v-bind:key="c._id" v-for="c in filterCharitys">
         <CharityCard v-bind:card_info="c"></CharityCard>
       </div>
     </div>
@@ -13,9 +16,20 @@ import { mapGetters } from "vuex"
 import CharityCard from "../components/CharityCard.vue"
 export default {
   name: 'Home',
+  props:['search'],
   computed: {
     ...mapGetters("drizzle", ["drizzleInstance", "isDrizzleInitialized"]),
-    ...mapGetters(["getRole","getCharitys"])
+    ...mapGetters(["getRole","getCharitys"]),
+    filterCharitys(){
+      let charityArray = this.getCharitys;
+      let filter = charityArray.filter(charity => {
+        if(charity.name.includes(this.search)){
+          console.log(charity.name)
+          return charity
+        }
+      })
+      return filter;
+    }
   },
   components: {
     CharityCard
