@@ -22,6 +22,8 @@
     "filepond-plugin-image-validate-size": "^1.2.6",
     "ipfs-http-client": "^54.0.1",
     "origin": "^0.8.6",
+    "text-encoder": "0.0.4",
+    "truffle-hdwallet-provider": "^1.0.17",
     "vue": "^2.6.11",
     "vue-country-region-select": "^2.0.16",
     "vue-filepond": "^6.0.3",
@@ -33,6 +35,7 @@
     "vuex": "^3.6.2"
   },
   "devDependencies": {
+    "@truffle/hdwallet-provider": "^2.0.6",
     "@vue/cli-plugin-babel": "~4.5.0",
     "@vue/cli-plugin-router": "~4.5.0",
     "@vue/cli-service": "~4.5.0",

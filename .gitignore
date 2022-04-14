@@ -2,7 +2,7 @@
 node_modules
 /dist
 /src/contracts
-
+.secret
 
 # local env files
 .env.local
