@@ -53,7 +53,7 @@ export default {
         },
         async load_image(){
             if(this.card_info == undefined || this.card_info.image == "" || this.card_info.image == undefined || this.card_info.image == null) return;
-            let img = await fetch(`http://127.0.0.1:8080/ipfs/${this.card_info.image}/`);
+            let img = await fetch(`https://ipfs.infura.io/ipfs/${this.card_info.image}/`);
 		    this.img = await img.text();
             this.loaded = true; // Dohvati base64URL
         }
