@@ -24,7 +24,6 @@ export default {
       let charityArray = this.getCharitys;
       let filter = charityArray.filter(charity => {
         if(charity.name.includes(this.search)){
-          console.log(charity.name)
           return charity
         }
       })

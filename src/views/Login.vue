@@ -250,7 +250,7 @@ export default {
 .visible{
   visibility: visible;
   opacity: 1;
-  width: 100%;
+  width:100%;
   transition: visibility 0s, opacity 1s ease;
 }
 .invisible{
@@ -327,12 +327,14 @@ export default {
 }
 .header div{
   position: absolute;
+  width: fit-content;
   text-align: center;
 }
 .form.donor{
   display: flex;
   align-items: center;
   justify-content: center;
+  width: 100%;
   margin-left: 0;
   padding-right: 0;
   border-radius: 0 10px 10px 0;
@@ -398,6 +400,9 @@ input::placeholder{
     margin-left:20px;
   }
   .col-md.form{
+    width: 350px;
+  }
+  .col-md.form.form.donor{
     width: 350px;
   }
 }

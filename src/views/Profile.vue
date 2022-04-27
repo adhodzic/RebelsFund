@@ -355,7 +355,6 @@ export default {
         this.getCurrentUser.image == "" ||
         this.getCurrentUser.image == undefined
       ) {
-        this.image = "@/assets/RebelsFundLightLogo.png";
         return;
       }
       let img = await fetch(

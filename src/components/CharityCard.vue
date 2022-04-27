@@ -1,6 +1,6 @@
 <template>
     <div class="card" style="width: 18rem;">
-    <img :src="img" class="card-img-top" alt="...">
+    <img :src="this.img" class="card-img-top" alt="...">
     <div class="card-body">
         <h5 id="title-text" class="card-title">{{card_info["name"]}}</h5>
         <p id="account-text" class="card-text">{{card_info["adr"]}}</p>
@@ -41,6 +41,12 @@ export default {
             img: image
         }
     },
+    watch: {
+        card_info: function(newVal, oldVal){
+            this.img = image
+            this.load_image();
+        }
+    },
     methods:{
         goDetails(){
             if (this.$route.name !== "Fund-details"){
@@ -60,7 +66,7 @@ export default {
     },
     mounted(){
     this.load_image();
-  }
+    }
 }
 </script>
 

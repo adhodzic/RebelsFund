@@ -137,7 +137,7 @@ export default {
       this.user = user
     },
     async load_image(){
-      if(this.user.image == "" || this.user.image == undefined){ this.image = "@/assets/RebelsFundLightLogo.png"; return;}
+      if(this.user.image == "" || this.user.image == undefined){ return;}
       let img = await fetch(`http://127.0.0.1:8080/ipfs/${this.user.image}/`);
       this.image = await img.text();
       this.loaded = true; // Dohvati base64URL
