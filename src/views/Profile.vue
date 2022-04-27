@@ -358,7 +358,7 @@ export default {
         return;
       }
       let img = await fetch(
-        `http://127.0.0.1:8080/ipfs/${this.getCurrentUser.image}/`
+        `https://ipfs.infura.io/ipfs/${this.getCurrentUser.image}/`
       );
       this.image = await img.text();
       this.loaded = true; // Dohvati base64URL
