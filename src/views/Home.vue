@@ -23,7 +23,7 @@ export default {
     filterCharitys(){
       let charityArray = this.getCharitys;
       let filter = charityArray.filter(charity => {
-        if(charity.name.includes(this.search)){
+        if(charity.name.toLowerCase().includes(this.search.toLowerCase())){
           return charity
         }
       })
